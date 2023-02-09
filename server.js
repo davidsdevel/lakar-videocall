@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const express = require('express');
 const socketIO = require('socket.io');
 const next = require('next');
+const cookie = require('cookie');
 
 const port = parseInt(process.env.PORT, 10) || 8081;
 const dev = process.env.NODE_ENV !== 'production';
@@ -25,15 +26,45 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
-app
-  .use(express.json())
-  .use('/api', apiRouter)
-  .all('*', (req, res) => handle(req, res))
 
 module.exports = async () => {
   try {
     await nextApp.prepare();
     await mongoose.connect(MONGO_URL, mongooseOptions);
+
+    app
+      .use(express.json())
+      .use((req, res, _next) => {
+        req.cookies = cookie.parse(req.headers.cookie);
+
+        _next();
+      })
+      .use('/api', apiRouter)
+      .get('/', (req, res, _next) => {
+        const {__lk_token} = req.cookies;
+
+        if (__lk_token)
+          return nextApp.render(req, res, '/_dashboard', req.query);
+
+        _next();
+      })
+      .get('/login', (req, res, _next) => {
+        const {__lk_token} = req.cookies;
+
+        if (__lk_token)
+          return res.redirect('/');
+
+        _next();
+      })
+      .get('/signin', (req, res) => {
+        const {__lk_token} = req.cookies;
+
+        if (__lk_token)
+          return res.redirect('/');
+
+        _next();
+      })
+      .all('*', (req, res) => handle(req, res))
 
     app
       .listen(port, () => console.log(`> Ready on http://localhost:${port}`));

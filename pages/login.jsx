@@ -28,7 +28,7 @@ async function login(e, email, password) {
     if (status !== 'OK')
       return alert('Error on login');
 
-    //Router.push('/');
+    Router.push('/');
   } catch(err) {
     alert('Error on login');
 

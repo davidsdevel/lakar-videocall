@@ -1,26 +1,7 @@
-import {useState, useEffect, useRef} from 'react';
 import Phone from '@/components/icons/phone'
 import Send from '@/components/icons/send'
 
-export default function Contacts({tab}) {
-  const [open, setOpen] = useState(false);
-  const prev = useRef(tab);
-
-  useEffect(() => {
-    /*if (prev !== '' && prev !== 'contacts' && tab === 'contacts')
-      setTimeout(() => setOpen(true), 300);
-    else if (prev === '' && tab === 'contacts')
-      setOpen(true);
-    else if (tab !== 'contacts')
-      setOpen(false);*/
-
-    if (tab === 'contacts')
-      setOpen(true);
-    else
-      setOpen(false);
-
-    //prev.current = tab;
-  }, [tab]);
+export default function Contacts({onAction}) {
 
   return <div className='bg-sky-100 w-full rounded-tl-3xl rounded-tr-3xl px-4'>
     <div className='flex justify-center py-4'>
@@ -36,10 +17,10 @@ export default function Contacts({tab}) {
           <span>krvloz</span>
         </div>
         <div>
-          <button className='mx-2'>
+          <button className='mx-2' onClick={() => onAction('messages', 'krvloz')}>
             <Send height='32'/>
           </button>
-          <button className='mx-2'>
+          <button className='mx-2' onClick={() => onAction('call', 'krvloz')}>
             <Phone height='32'/>
           </button>
         </div>

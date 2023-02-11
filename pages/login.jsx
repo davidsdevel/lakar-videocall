@@ -28,7 +28,7 @@ async function login(e, email, password) {
     if (status !== 'OK')
       return alert('Error on login');
 
-    Router.push('/');
+    Router.push('/_dashboard', '/');
   } catch(err) {
     alert('Error on login');
 
@@ -37,8 +37,8 @@ async function login(e, email, password) {
 }
 
 export default function Login() {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   return <div className='flex justify-center items-center absolute w-full h-full'>
     <form onSubmit={e => login(e, email, password)}>

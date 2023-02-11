@@ -1,6 +1,6 @@
 const {Router} = require('express');
 const cookie = require('cookie');
-//const userMiddleware = require('./user');
+const userRoutes = require('./user');
 const checkTokenMiddleware = require('./checkToken');
 const user = require('../../lib/mongo/models/users');
 
@@ -28,13 +28,12 @@ route
       });
 
     res.setHeader('set-cookie', cookie.serialize('__lk_token', token, {path: '/'}))
-    //req.cookies.set('__lk_token', token);
 
     res.json({
       status: 'OK'
     });
   })
   .all(checkTokenMiddleware)
-//  .use('/user', userMiddleware);
+  .use('/user', userRoutes);
 
 module.exports = route;

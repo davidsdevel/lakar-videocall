@@ -1,3 +1,4 @@
+import {useFriends} from '@/components/dashboard/context';
 import Phone from '@/components/icons/phone'
 import Send from '@/components/icons/send'
 import Input from '@/components/input';
@@ -40,16 +41,20 @@ const messages = [
 
 const username =  'davidsdevel';
 
-export default function Messages({onCloseMessages}) {
+export default function Messages({onCloseMessages, friendID}) {
+  const t = useFriends(friendID);
+  console.log(t)
+  const {username, profilePicture, online} = t
+
   return <div className='fixed w-full h-full bg-yellow-500 top-0 left-0 flex flex-col'>
     <div className='p-2 flex items-center bg-green-900'>
       <div className='relative'>
         <button onClick={onCloseMessages}>Back</button>
-        <div className='w-20 h-20 bg-blue-500 rounded-full'/>
+        <img src={profilePicture} className='w-20 h-20 bg-blue-500 rounded-full'/>
       </div>
       <div className='grow flex items-center'>
-        <div className='mx-2 w-4 h-4 bg-green-500 rounded-full'/>
-        <span>hola-mundo</span>
+        <div className={`mx-2 w-4 h-4 ${online ? 'bg-green-500' : 'bg-red-500'} rounded-full`}/>
+        <span>{username}</span>
       </div>
       <button className='mx-2'>
         <Phone height='32'/>

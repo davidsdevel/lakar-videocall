@@ -4,6 +4,10 @@
   "main": "index.js",
   "author": "David's Devel <djgm1206@gmail.com>",
   "license": "MIT",
+  "engines": {
+    "yarn": "^1.22",
+    "node": ">=16"
+  },
   "scripts": {
     "start": "next build && node index.js",
     "bulid": "next build",

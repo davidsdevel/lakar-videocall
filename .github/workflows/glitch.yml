@@ -1,0 +1,20 @@
+name: Deploy to Glitch
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  repo-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: repo-sync
+        uses: wei/git-sync@v1
+        env:
+          SOURCE_REPO: "https://github.com/davidsdevel/lakar-call"
+          SOURCE_BRANCH: main
+          DESTINATION_REPO: ${{secrets.GLITCH_REPO}}
+          DESTINATION_BRANCH: master
+        with:
+          args: $SOURCE_REPO $SOURCE_BRANCH $DESTINATION_REPO $DESTINATION_BRANCH

@@ -6,8 +6,7 @@
   "license": "MIT",
   "engines": {
     "yarn": "^1.22",
-    "node": ">=16",
-    "npm": "^8.15.0"
+    "node": ">=16"
   },
   "scripts": {
     "start": "next build && node index.js",

@@ -45,6 +45,4 @@ jobs:
       - run: git remote add glitch "$GLITCH_REPO"
       - run: git add .
       - run: git commit -m "Deploy"
-      - run: git push glitch master
-
-
+      - run: git push glitch main

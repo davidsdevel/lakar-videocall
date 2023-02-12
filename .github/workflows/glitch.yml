@@ -7,14 +7,41 @@ on:
 
 jobs:
   repo-sync:
+    environment:
+      name: https://lakar.glitch.me
+    env:
+      GLITCH_REPO: ${{secrets.GLITCH_REPO}}
     runs-on: ubuntu-latest
     steps:
-      - name: repo-sync
-        uses: wei/git-sync@v1
-        env:
-          SOURCE_REPO: "https://github.com/davidsdevel/lakar-call"
-          SOURCE_BRANCH: main
-          DESTINATION_REPO: ${{secrets.GLITCH_REPO}}
-          DESTINATION_BRANCH: master
+      - name: Check out code
+        uses: actions/checkout@v3
         with:
-          args: $SOURCE_REPO $SOURCE_BRANCH $DESTINATION_REPO $DESTINATION_BRANCH
+          fetch-depth: 2
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          check-latest: true
+          cache: 'yarn'
+
+     - uses: actions/cache@v3
+        id: restore-build
+        with:
+          path: ./.next/cache
+          key: lettercms-${{github.ref_name}}-lakar-${{hashFiles('yarn.lock')}}
+          restore-keys: |
+            lettercms-${{github.ref_name}}-lakar-
+            lettercms-${{github.ref_name}}-
+            lettercms-
+
+      - name: Build
+        run: yarn build
+      - run: rm .gitignore
+      - run: echo .next/cache >> .gitignore
+      - run: echo node_modules >> .gitignore
+      - run: git remote add glitch "$GLITCH_REPO"
+      - run: git commit -m "Deploy"
+      - run: git push destination master
+
+

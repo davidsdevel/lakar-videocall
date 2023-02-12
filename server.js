@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const http = require('node:http');
+const http = require('http');
 const mongoose = require('mongoose');
 const express = require('express');
 const socketIO = require('socket.io');

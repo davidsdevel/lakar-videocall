@@ -24,10 +24,13 @@ const handle = nextApp.getRequestHandler();
 
 //routes
 const apiRouter = require('./routes/api');
+const handleConnection = require('./lib/server/handleConnection');
 
 const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
+
+io.on('connection', handleConnection);
 
 module.exports = async () => {
   try {

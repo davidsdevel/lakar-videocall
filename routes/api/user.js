@@ -11,7 +11,7 @@ route
     const {userID} = jwt.decode(__lk_token, process.env.JWT_ATH);
 
     //TODO: Emit online event on ws
-    const user = await users.findOneAndUpdate({_id: userID}, {oline: true}, {lean: true, select: '-password'});
+    const user = await users.findOneAndUpdate({_id: userID}, {online: true}, {lean: true, select: '-password'});
     
     if (user.friends.length > 0) {
       const friendList = await users.find({
@@ -41,8 +41,6 @@ route
     const {id} = req.params;
     const {friendID} = req.body;
 
-    console.log(id, friendID);
-
     const [user, friend] = await Promise.all([
       users.findById(id, null, {lean: true}),
       users.findById(friendID, null, {lean: true})
@@ -66,6 +64,9 @@ route
       users.updateOne({_id: id}, {$push: {friends: friendID}}),
       users.updateOne({_id: friendID}, {$push: {friends: id}})
     ]);
+
+    //Set online status
+    user.online = true;
 
     req.io.emit('new-friend', {
       to: friendID,

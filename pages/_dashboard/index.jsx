@@ -12,6 +12,7 @@ const socket = getSocket();
 function Container() {
   const [tab, setTab] = useState('');
   const [friendID, setFriendID] = useState('');
+  const [isCaller, setIsCaller] = useState(false);
   const {loading, user, friends} = useUser();
 
   useEffect(() => {
@@ -19,13 +20,16 @@ function Container() {
       const {_id} = user;
 
       const handleNewFriend = newUser => {
-        console.log(_id, newUser);
-
         if (newUser.to === _id)
           user.updateFriends(JSON.parse(newUser.from));
       }
 
       socket.on('new-friend', handleNewFriend);
+      socket.on('receive-call', id => {
+        console.log(id);
+        setTab('call');
+        setFriendID(id);
+      });
 
       return () => {
         socket.off('new-friend', handleNewFriend);
@@ -44,19 +48,27 @@ function Container() {
 
       setTab(tab);
       setFriendID(id);
+      setIsCaller(true);
     }} friends={user.friends}/>
     <Menu onAddFriend={friend => user.updateFriends(friend)}/>
     {  tab === 'messages' &&
-      <Messages onCloseMessages={() => {
-        setTab(null);
-        setFriendID('');
-      }} friendID={friendID}/>
+      <Messages
+        onCloseMessages={() => {
+          setTab(null);
+          setFriendID('');
+        }}
+        friendID={friendID}
+      />
     }
     {  tab === 'call' &&
-      <Call onEndCall={() => {
-        setTab(null);
-        setFriendID('');
-      }} friendID={friendID}/>
+      <Call
+        onEndCall={() => {
+          setTab(null);
+          setFriendID('');
+        }}
+        friendID={friendID}
+        isCaller={isCaller}
+      />
     }
   </>
 }

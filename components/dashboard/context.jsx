@@ -66,9 +66,6 @@ export function DashboardProvider({children}) {
     fetch('/api/user')
       .then(e => e.json())
       .then(e => {
-        socket.on('connect', () => socket.emit('join', e._id));
-        socket.on('online', console.log);
-
         setUser(e);
 
         let friendsById = {};
@@ -79,8 +76,39 @@ export function DashboardProvider({children}) {
 
         setFriends(friendsById);
         setLoading(false);
+        socket.emit('join', e._id);
       });
   }, []);
+
+  useEffect(() => {
+    const updateUsers = id => {
+      const onlineMap = user.friends.map(e => {
+        if (e._id === id)
+          e.online = true;
+
+        return e;
+      });
+
+      setUser(prev => ({
+        ...prev,
+        friends: onlineMap
+      }));
+
+      setFriends(prev => ({
+        ...prev,
+        [id]: {
+          ...prev[id],
+          online: true
+        }
+      }));
+    }
+
+    socket.on('friend-online', updateUsers);
+
+    return () => {
+      socket.off('friend-online', updateUsers);
+    }
+  }, [user, friends])
 
   const value = loading ? {loading} : {
     user: {

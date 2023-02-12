@@ -35,8 +35,8 @@ jobs:
             lettercms-${{github.ref_name}}-
             lettercms-
 
-      - name: Build
-        run: yarn build
+      - run: yarn
+      - run: yarn build
       - run: rm .gitignore
       - run: echo .next/cache >> .gitignore
       - run: echo node_modules >> .gitignore

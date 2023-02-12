@@ -5,8 +5,9 @@
   "author": "David's Devel <djgm1206@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "node index.js",
-    "bulid": "next build"
+    "start": "next build && node index.js",
+    "bulid": "next build",
+    "dev": "node index.js"
   },
   "dependencies": {
     "cookie": "^0.5.0",

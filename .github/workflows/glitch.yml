@@ -13,13 +13,22 @@ jobs:
       GLITCH_REPO: ${{secrets.GLITCH_REPO}}
     runs-on: ubuntu-latest
     steps:
-      - run: "git clone https://github.com/davidsdevel/lakar-call /root/source --origin source"
-      - run: cd /root/source
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          check-latest: true
+          cache: 'yarn'
 
       - uses: actions/cache@v3
         id: restore-build
         with:
-          path: /root/source/.next/cache
+          path: ./.next/cache
           key: lettercms-${{github.ref_name}}-lakar-${{hashFiles('yarn.lock')}}
           restore-keys: |
             lettercms-${{github.ref_name}}-lakar-
@@ -31,9 +40,11 @@ jobs:
       - run: rm .gitignore
       - run: echo .next/cache >> .gitignore
       - run: echo node_modules >> .gitignore
+      - run: git config --global user.email "djgm1206@gmail.com"
+      - run: git config --global user.name "David's Devel"
       - run: git remote add glitch "$GLITCH_REPO"
       - run: git add .
       - run: git commit -m "Deploy"
-      - run: git push glitch master
+      - run: git push destination master
 
 

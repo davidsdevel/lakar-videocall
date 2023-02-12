@@ -41,6 +41,7 @@ jobs:
       - run: echo .next/cache >> .gitignore
       - run: echo node_modules >> .gitignore
       - run: git remote add glitch "$GLITCH_REPO"
+      - run: git add .
       - run: git commit -m "Deploy"
       - run: git push destination master
 

@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "bulid": "next build",
+    "build": "next build",
     "dev": "node index.js"
   },
   "dependencies": {

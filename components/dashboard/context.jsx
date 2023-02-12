@@ -77,14 +77,16 @@ export function DashboardProvider({children}) {
         setFriends(friendsById);
         setLoading(false);
         socket.emit('join', e._id);
+
+        document.onbeforeunload = () => socket.emit('friend-offline', e._id);
       });
   }, []);
 
   useEffect(() => {
-    const updateUsers = id => {
+    const updateUsers = (id, online) => {
       const onlineMap = user.friends.map(e => {
         if (e._id === id)
-          e.online = true;
+          e.online = online;
 
         return e;
       });
@@ -103,10 +105,12 @@ export function DashboardProvider({children}) {
       }));
     }
 
-    socket.on('friend-online', updateUsers);
+    socket.on('friend-online', id => updateUsers(id, true));
+    socket.on('friend-offline', id => updateUsers(id, false))
 
     return () => {
-      socket.off('friend-online', updateUsers);
+      socket.off('friend-online', id => updateUsers(id, true));
+      socket.off('friend-offline', id => updateUsers(id, false));
     }
   }, [user, friends])
 

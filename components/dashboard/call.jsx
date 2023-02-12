@@ -1,4 +1,4 @@
-import {useEffect, useRef} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {getSocket, useUser} from '@/components/dashboard/context';
 
 const socket = getSocket();
@@ -109,6 +109,9 @@ const joinCall = async (pc, friendID) => {
 export default function Call({onEndCall, friendID, isCaller}) {
   const receiverRef = useRef(null);
   const senderRef = useRef(null);
+  const [status, setStatus] = useState('');
+  const [ice, setIce] = useState('');
+  const [signaling, setSignaling] = useState('');
 
   const {user} = useUser();
 
@@ -122,14 +125,12 @@ export default function Call({onEndCall, friendID, isCaller}) {
 
         const pc = new RTCPeerConnection(RTCconfiguration);
 
-        pc.onconnectionstatechange = e => {
-          console.log(`Connection state change: ${pc.connectionState}`);
-        };
 
         pc.addEventListener('track', event => event.streams[0].getTracks().forEach(track => remoteStream.addTrack(track)));
 
-        pc.onsignalingstatechange = e => console.log(`Signaling state change: ${pc.signalingState}`);
-        pc.oniceconnectionstatechange = e => console.log(`ICE state change: ${pc.signalingState}`);
+        pc.onconnectionstatechange = e => setStatus(e.connectionState)
+        pc.onsignalingstatechange = e => setSignaling(e.signalingState);
+        pc.oniceconnectionstatechange = e => setIce(e.ICEConnectionState);
 
 
         if (isCaller)
@@ -148,6 +149,9 @@ export default function Call({onEndCall, friendID, isCaller}) {
       <video ref={receiverRef} poster='https://cdn.jsdelivr.net/gh/lettercms/lettercms/apps/cdn/images/article-details-large.jpg' autoPlay muted className='w-full'/>
       <video ref={senderRef} autoPlay muted className='absolute top-4 right-4 w-24'/>
     </div>
+    <div>Signaling: {signaling}</div>
+    <div>Status: {status}</div>
+    <div>ICE: {ice}</div>
     <div className='w-full bg-slate-100 pt-2 pb-4 justify-evenly flex'>
       <button className='w-16 h-16 bg-red-100 rounded-full'></button>
       <button className='w-16 h-16 bg-red-500 rounded-full' onClick={() => {

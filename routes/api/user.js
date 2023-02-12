@@ -11,7 +11,7 @@ route
     const {userID} = jwt.decode(__lk_token, process.env.JWT_ATH);
 
     //TODO: Emit online event on ws
-    const user = await users.findOneAndUpdate({_id: userID}, {online: true}, {lean: true, select: '-password'});
+    const user = await users.findOneAndUpdate({_id: userID}, {online: false}, {lean: true, select: '-password'});
     
     if (user.friends.length > 0) {
       const friendList = await users.find({

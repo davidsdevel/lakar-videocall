@@ -33,6 +33,13 @@ route
       status: 'OK'
     });
   })
+  .post('/offline', async (req, res) => {
+    const {id} = req.body;
+
+    await users.findOneAndUpdate({_id: id}, {online: false});
+
+    res.json({});
+  })
   .all(checkTokenMiddleware)
   .use('/user', userRoutes);
 

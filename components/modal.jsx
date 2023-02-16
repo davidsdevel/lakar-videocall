@@ -17,11 +17,11 @@ export default function Modal({isOpen, close, children}) {
     }
   }, [isOpen]);
 
-  return <div ref={shadowRef} className='fixed transition-all duration-300 ease top-0 left-0 w-full h-full items-center justify-center' >
+  return <div ref={shadowRef} className='fixed transition-all duration-300 ease top-0 left-0 w-full h-full items-center justify-center z-10' >
     {children}
     <div className='fixed w-full h-full opacity-70 bg-black' onClick={e => {
       e.bubbles = false;
-      close()
+      close();
     }}/>
-  </div>
+  </div>;
 }

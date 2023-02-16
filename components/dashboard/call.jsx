@@ -1,7 +1,6 @@
 import {useEffect, useRef, useState} from 'react';
-import {getSocket, useUser} from '@/components/dashboard/context';
-
-const socket = getSocket();
+import {useSocket, useUser} from '@/components/dashboard/context';
+import {FaPhoneSlash, FaMicrophone, FaMicrophoneSlash, FaSync, FaVideo, FaVideoSlash} from 'react-icons/fa';
 
 const userContraints = {
   audio: true,
@@ -10,43 +9,46 @@ const userContraints = {
     'width': {'max': 426},
     'height': {'max': 240}
   }
-}
+};
 
 const RTCconfiguration = {
       iceServers: [
         {
-          urls: "stun:openrelay.metered.ca:80"
+           urls: [
+             'stun:stun.l.google.com:19302',
+             'stun:stun1.l.google.com:19302',
+             'stun:stun2.l.google.com:19302',
+             'stun:stun3.l.google.com:19302',
+             'stun:stun4.l.google.com:19302',
+           ] 
         },
         {
-          urls: "turn:openrelay.metered.ca:80",
-          username: "openrelayproject",
-          credential: "openrelayproject",
+          urls: 'turn:openrelay.metered.ca:80',
+          username: 'openrelayproject',
+          credential: 'openrelayproject',
         },
         {
-          urls: "turn:openrelay.metered.ca:443",
-          username: "openrelayproject",
-          credential: "openrelayproject",
+          urls: 'turn:openrelay.metered.ca:443',
+          username: 'openrelayproject',
+          credential: 'openrelayproject',
         },
         {
-          urls: "turn:openrelay.metered.ca:443?transport=tcp",
-          username: "openrelayproject",
-          credential: "openrelayproject",
+          urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+          username: 'openrelayproject',
+          credential: 'openrelayproject',
         }
       ]
-    }
+    };
 
-const startCall = async (pc, userID, stream, friendID) => {
+const startCall = async (socket, pc, userID, stream, friendID) => {
   pc.onicecandidate = event => {
     if (event.candidate)
       socket.emit('caller', {id: userID, candidate: event.candidate});
   };
 
-  socket.on('answer', async data => {
-    if (data.id === userID) {
-      delete data.id;
-
-      await pc.setRemoteDescription(new RTCSessionDescription(data));
-    }
+  socket.on('offer-answer', async data => {
+    if (data.id === userID)
+      await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
   });
 
   socket.on('callee', ({id, candidate}) => {
@@ -54,33 +56,31 @@ const startCall = async (pc, userID, stream, friendID) => {
       pc.addIceCandidate(new RTCIceCandidate(candidate));
   });
 
-  stream.getTracks().forEach(track => pc.addTrack(track, stream));
-
   const offerDescription = await pc.createOffer({iceRestart: true});
   await pc.setLocalDescription(offerDescription);
 
   const offer = {
     sdp: offerDescription.sdp,
     type: offerDescription.type
-  }
+  };
   
   socket.emit('init-call', {
     from: userID,
     to: friendID,
     offer
   });
-}
+};
 
-const joinCall = async (pc, friendID) => {
+const joinCall = async (socket, pc, friendID) => {
 
   pc.onicecandidate = (event) => {
     if (event.candidate)
-      socket.emit("callee", {friendID, candidate: event.candidate});
+      socket.emit('callee', {friendID, candidate: event.candidate});
   };
 
   socket.on('caller', ({id, candidate}) => {
     if (id === friendID)
-      pc.addIceCandidate(new RTCIceCandidate(candidate))
+      pc.addIceCandidate(new RTCIceCandidate(candidate));
   });
 
   const offer = await new Promise(resolve => socket.emit('get_offer', friendID, resolve));
@@ -93,8 +93,10 @@ const joinCall = async (pc, friendID) => {
 
   const answer = {
     id: friendID,
-    type: answerDescription.type,
-    sdp: answerDescription.sdp,
+    answer: {
+      type: answerDescription.type,
+      sdp: answerDescription.sdp,
+    }
   };
 
   socket.emit('answer', answer);
@@ -104,16 +106,77 @@ const joinCall = async (pc, friendID) => {
 
      pc.addIceCandidate(candidate);
   });
-}
+};
 
 export default function Call({onEndCall, friendID, isCaller}) {
   const receiverRef = useRef(null);
   const senderRef = useRef(null);
-  const [status, setStatus] = useState('');
-  const [ice, setIce] = useState('');
-  const [signaling, setSignaling] = useState('');
+  const pcRef = useRef(null);
 
-  const {user} = useUser();
+  const [isFrontalCamera, setIsFrontalCamera] = useState(true);
+  const [signaling, setSignaling] = useState('');
+  const [isMuted, setIsMuted] = useState(false);
+  const [status, setStatus] = useState('');
+  const [hasVideo, setHasVideo] = useState(true);
+  const [ice, setIce] = useState('');
+
+  const socket = useSocket();
+  const {user, friends} = useUser();
+
+  const endCall = () => {
+    if (pcRef.current)
+      pcRef.current.close();
+
+    if (receiverRef.current) {
+      receiverRef.current.srcObject.getTracks().forEach(track => track.stop());
+      receiverRef.current.srcObject = null;    
+    }
+
+    if (senderRef.current) {
+      senderRef.current.srcObject.getTracks().forEach(track => track.stop());
+      senderRef.current.srcObject = null;
+    }
+
+    onEndCall();
+  };
+
+  const flipCamera = async () => {
+    if (pcRef.current) {
+      const oldVideo = senderRef.current.srcObject.getVideoTracks()[0];
+
+      oldVideo.stop();
+
+      const newStream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: {
+          facingMode: !isFrontalCamera ? 'user' : 'environment',
+          'width': {'max': 426},
+          'height': {'max': 240}
+        }
+      });
+
+      const videoTrack = newStream.getVideoTracks()[0];
+
+      const sender = pcRef.current.getSenders().find(s => s.track.kind == videoTrack.kind);
+
+      await sender.replaceTrack(videoTrack);
+
+      senderRef.current.srcObject.removeTrack(oldVideo);
+      senderRef.current.srcObject.addTrack(videoTrack);
+
+      setIsFrontalCamera(!isFrontalCamera);
+    }
+  };
+
+  const toggleMicro = async () => {
+    if (pcRef.current) {
+      const track = senderRef.current.srcObject.getAudioTracks()[0];
+
+      track.enabled = isMuted;
+
+      setIsMuted(!isMuted);
+    }
+  };
 
   useEffect(() => {
     navigator.getUserMedia(userContraints,
@@ -125,43 +188,70 @@ export default function Call({onEndCall, friendID, isCaller}) {
 
         const pc = new RTCPeerConnection(RTCconfiguration);
 
+        pcRef.current = pc;
 
         pc.addEventListener('track', event => event.streams[0].getTracks().forEach(track => remoteStream.addTrack(track)));
 
-        pc.onconnectionstatechange = e => setStatus(e.connectionState)
-        pc.onsignalingstatechange = e => setSignaling(e.signalingState);
-        pc.oniceconnectionstatechange = e => setIce(e.ICEConnectionState);
+        pc.onconnectionstatechange = e => {
+          setStatus(pc.connectionState);
+        };
+        pc.onsignalingstatechange = e => {
+          setSignaling(pc.signalingState);
+        };
+        pc.oniceconnectionstatechange = e => {
+          setIce(pc.iceConnectionState);
+        };
 
+        socket.on('end-call', endCall);
+
+        localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
 
         if (isCaller)
-          startCall(pc, user._id, localStream, friendID);
+          startCall(socket, pc, user._id, localStream, friendID);
         else
-          joinCall(pc, friendID);
-        
+          joinCall(socket, pc, friendID);
       },
       err => {
         alert('You need approve camera access');
       }
     );
-  }, []);
+
+    return () => {
+      pcRef.current = null;
+      senderRef.current = null;
+      receiverRef.current = null;
+    };
+  }, [socket, endCall, friendID, user._id, isCaller]);
+
   return <div className='fixed w-full h-full top-0 bg-white flex flex-col'>
     <div id='main-screen' className='w-full bg-blue-100 grow flex items-center justify-center'>
-      <video ref={receiverRef} poster='https://cdn.jsdelivr.net/gh/lettercms/lettercms/apps/cdn/images/article-details-large.jpg' autoPlay muted className='w-full'/>
+      <video ref={receiverRef} poster={friends[friendID].profilePicture} autoPlay muted className='w-full'/>
       <video ref={senderRef} autoPlay muted className='absolute top-4 right-4 w-24'/>
     </div>
-    <div>Signaling: {signaling}</div>
-    <div>Status: {status}</div>
-    <div>ICE: {ice}</div>
-    <div className='w-full bg-slate-100 pt-2 pb-4 justify-evenly flex'>
-      <button className='w-16 h-16 bg-red-100 rounded-full'></button>
-      <button className='w-16 h-16 bg-red-500 rounded-full' onClick={() => {
-        
-        receiverRef.current.srcObject.getTracks().forEach(track => track.stop());
-        senderRef.current.srcObject.getTracks().forEach(track => track.stop());
-
-        onEndCall();
-      }}></button>
-      <button className='w-16 h-16 bg-red-100 rounded-full'></button>
+    <div className='w-full bg-slate-100 pt-2 pb-4 justify-evenly flex items-center'>
+      <button className='flex items-center justify-center p-4 bg-red-300 rounded-full h-fit' onClick={flipCamera}>
+        <FaSync/>
+      </button>
+      <button className='flex items-center justify-center p-4 bg-red-300 rounded-full h-fit'>
+        {
+          hasVideo
+           ? <FaVideoSlash/>
+           : <FaVideo/>
+        }
+      </button>
+      <button className='flex items-center justify-center p-4 bg-red-300 rounded-full h-fit' onClick={toggleMicro}>
+        {
+          isMuted
+            ? <FaMicrophone/>
+            : <FaMicrophoneSlash/>
+        }
+      </button>
+      <button className='flex items-center justify-center p-6 bg-red-500 rounded-full' onClick={() => {
+        socket.emit('end-call', {from: user._id, to: friendID});
+        endCall();
+      }}>
+        <FaPhoneSlash style={{height: 24, width: 24}}/>
+      </button>
     </div>
-  </div>  
+  </div>;  
 }

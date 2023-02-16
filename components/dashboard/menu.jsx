@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {useUser, addFriend} from '@/components/dashboard/context';
+import {useUser, addFriend, useSocket} from '@/components/dashboard/context';
 import Plus from '@/components/icons/plus';
 import Modal from '@/components/modal';
 import Input from '@/components/input';
@@ -11,15 +11,22 @@ export default function Menu({onAddFriend}) {
   const [friendID, setFriendID] = useState('');
   const {loading, user} = useUser();
 
-  return <div className='fixed bottom-8 right-8'>
-    <button className='flex justify-center items-center rounded-full bg-gray-500 h-16 w-16' onClick={() => setShow(true)}>
-      <Plus height='24' fill='white'/>
+  const socket = useSocket();
+
+  return <div className='absolute right-4'>
+    <button className='flex justify-center items-center rounded-full bg-gray-500 h-12 w-12' onClick={() => setShow(true)}>
+      <Plus height='20' fill='white'/>
     </button>
     <Modal isOpen={show} close={() => setShow(false)}>
       <div className='z-10 rounded-2xl bg-slate-100 px-4 py-8 flex flex-col'>
         <Input type='text' placeholder='Friend ID' value={friendID} onChange={({target: {value}}) => setFriendID(value)}/>
         <Button onClick={async () => {
           const friend = await user.addFriend(friendID);
+
+          socket.emit('new-friend', {
+            from: user._id,
+            to: friendID
+          });
 
           onAddFriend(friend);
           setFriendID('');
@@ -34,5 +41,5 @@ export default function Menu({onAddFriend}) {
         }}>Copy ID</Button>
       </div>
     </Modal>
-  </div>
+  </div>;
 }

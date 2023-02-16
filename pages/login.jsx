@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import {signIn} from 'next-auth/react';
 import Router from 'next/router';
 import Container from '@/components/container';
 import Input from '@/components/input';
@@ -8,27 +9,16 @@ async function login(e, email, password) {
   e.preventDefault();
 
   try {
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email,
-        password
-      })
+    const {ok} = await signIn('credentials', {
+      email,
+      password,
+      redirect: false
     });
 
-    if (!res.ok)
+    if (!ok)
       return alert('Error on login');
 
-    const {status} = await res.json();
-
-    //TODO: Handler API messages response
-    if (status !== 'OK')
-      return alert('Error on login');
-
-    Router.push('/_dashboard', '/');
+    Router.push('/');
   } catch(err) {
     alert('Error on login');
 
@@ -58,5 +48,5 @@ export default function Login() {
         <Button>Login</Button>
       </Container>
     </form>
-  </div>
+  </div>;
 }

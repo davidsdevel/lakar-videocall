@@ -1,9 +1,12 @@
 import {createContext, useEffect, useContext, useState, useRef} from 'react';
+import {useSession} from 'next-auth/react';
 import cookie from 'cookie';
 import io from 'socket.io-client';
 
+const isDev = process.env.NODE_ENV !== 'production';
 const Context = createContext();
-const socket = io();
+
+const socketIOUrl = isDev ? 'http://localhost:8082' : 'https://lakar.glitch.me';
 
 export function useUser() {
   const value = useContext(Context);
@@ -32,8 +35,16 @@ export function useFriends(id) {
   return value.friends[id];
 }
 
-export function getSocket() {
-  return socket;
+export function useSocket() {
+  const value = useContext(Context);
+
+  if (!value && process.env.NODE_ENV !== 'production') {
+    throw new Error(
+      '[lettercms]: `useUser` must be wrapped in a <DashboardProvider />'
+    );
+  }
+
+  return value.socket;
 }
 
 export async function addFriend(id, friendID) {
@@ -62,25 +73,36 @@ export function DashboardProvider({children}) {
   const [loading, setLoading] = useState(true);
   const [friends, setFriends] = useState({});
 
+  const socket = useRef(null);
+
+  const {status, data} = useSession();
+
   useEffect(() => {
-    fetch('/api/user')
-      .then(e => e.json())
-      .then(e => {
-        setUser(e);
-
-        let friendsById = {};
-
-        e.friends.forEach(e => {
-          friendsById[e._id] = e;
-        });
-
-        setFriends(friendsById);
-        setLoading(false);
-        socket.emit('join', e._id);
-
-        document.onbeforeunload = () => socket.emit('friend-offline', e._id);
+    if (status === 'authenticated' && data) {
+      socket.current = io(socketIOUrl, {
+        auth: {
+          id: data.user.id
+        }
       });
-  }, []);
+
+      socket.current.id = data.user.id;
+
+      fetch(`/api/user/${data.user.id}`)
+        .then(e => e.json())
+        .then(e => {
+          setUser(e);
+
+          let friendsById = {};
+
+          e.friends.forEach(e => {
+            friendsById[e._id] = e;
+          });
+
+          setFriends(friendsById);
+          setLoading(false);
+        });
+    }
+  }, [status, data]);
 
   useEffect(() => {
     const updateUsers = (id, online) => {
@@ -100,19 +122,24 @@ export function DashboardProvider({children}) {
         ...prev,
         [id]: {
           ...prev[id],
-          online: true
+          online: online
         }
       }));
-    }
+    };
 
-    socket.on('friend-online', id => updateUsers(id, true));
-    socket.on('friend-offline', id => updateUsers(id, false))
+    const onOnline = id => updateUsers(id, true);
+    const onOffline = id => updateUsers(id, false);
 
-    return () => {
-      socket.off('friend-online', id => updateUsers(id, true));
-      socket.off('friend-offline', id => updateUsers(id, false));
+    if (socket.current) {
+      socket.current.on('friend-online', onOnline);
+      socket.current.on('friend-offline', onOffline);
+
+      return () => {
+        socket.current.off('friend-online', onOnline);
+        socket.current.off('friend-offline', onOffline);
+      };
     }
-  }, [user, friends])
+  }, [user, friends]);
 
   const value = loading ? {loading} : {
     user: {
@@ -125,10 +152,10 @@ export function DashboardProvider({children}) {
     },
     friends,
     token,
-    socket
+    socket: socket.current
   };
 
   return <Context.Provider value={value}>
     {children}
-  </Context.Provider>
+  </Context.Provider>;
 }

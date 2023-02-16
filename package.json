@@ -9,24 +9,26 @@
     "node": ">=16"
   },
   "scripts": {
-    "start": "node index.js",
+    "start": "set NODE_ENV=production& node index.js",
     "build": "next build",
-    "dev": "node index.js"
+    "lint": "next lint",
+    "dev": "next dev -p 8081"
   },
   "dependencies": {
-    "cookie": "^0.5.0",
-    "express": "^4.18.2",
+    "bcrypt": "^5.1.0",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "5",
     "next": "12.2.5",
+    "next-auth": "4.15",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "socket.io": "^4.6.0",
+    "react-icons": "^4.7.1",
     "socket.io-client": "^4.6.0"
   },
   "devDependencies": {
     "autoprefixer": "^9.8.8",
-    "dotenv": "^16.0.3",
+    "eslint": "^8.34.0",
+    "eslint-config-next": "12.2.5",
     "postcss": "^8.4.19",
     "tailwindcss": "^3.2.4"
   }

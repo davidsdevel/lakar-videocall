@@ -1,13 +1,10 @@
 import {useState, useEffect} from 'react';
-import {DashboardProvider, useUser, getSocket} from '@/components/dashboard/context';
+import {DashboardProvider, useUser, useSocket} from '@/components/dashboard/context';
 import Profile from '@/components/dashboard/profile';
-import Menu from '@/components/dashboard/menu';
 import Messages from '@/components/dashboard/messages';
 import Call from '@/components/dashboard/call';
 import Contacts from '@/components/dashboard/contacts';
 import Loading from '@/components/loading';
-
-const socket = getSocket();
 
 function Container() {
   const [tab, setTab] = useState('');
@@ -15,42 +12,54 @@ function Container() {
   const [isCaller, setIsCaller] = useState(false);
   const {loading, user, friends} = useUser();
 
+  const socket = useSocket();
+
   useEffect(() => {
-    if (user) {
+    if (user && socket) {
       const {_id} = user;
 
       const handleNewFriend = newUser => {
-        if (newUser.to === _id)
-          user.updateFriends(JSON.parse(newUser.from));
-      }
+        if (newUser.to === _id) {
+          const from = JSON.parse(newUser.from);
+
+          user.updateFriends(from);
+
+          socket.emit('sync-friend', {
+            to: from._id,
+            from: _id
+          });
+        }
+      };
 
       socket.on('new-friend', handleNewFriend);
       socket.on('receive-call', id => {
-        console.log(id);
         setTab('call');
         setFriendID(id);
       });
 
       return () => {
         socket.off('new-friend', handleNewFriend);
-      }
+      };
     }
-  }, [user]);
+  }, [user, socket]);
 
   if (loading)
-    return <Loading/>
+    return <Loading/>;
 
-  return <>
+  return <div className='fixed h-full w-full flex flex-col'>
     <Profile username={user.username} profilePicture={user.profilePicture}/>
-    <Contacts onAction={(tab, id) => {
-      if (tab === 'call' && !friends[id].online)
-        return alert('User offline');
+    <Contacts
+      onAction={(tab, id) => {
+        if (tab === 'call' && !friends[id]?.online)
+          return alert('User offline');
 
-      setTab(tab);
-      setFriendID(id);
-      setIsCaller(true);
-    }} friends={user.friends}/>
-    <Menu onAddFriend={friend => user.updateFriends(friend)}/>
+        setTab(tab);
+        setFriendID(id);
+        setIsCaller(true);
+      }}
+      onAddFriend={friend => user.updateFriends(friend)}
+      friends={user.friends}
+    />
     {  tab === 'messages' &&
       <Messages
         onCloseMessages={() => {
@@ -70,11 +79,11 @@ function Container() {
         isCaller={isCaller}
       />
     }
-  </>
+  </div>;
 }
 
 export default function Dashboard() {
   return <DashboardProvider>
     <Container/>
-  </DashboardProvider>
+  </DashboardProvider>;
 }

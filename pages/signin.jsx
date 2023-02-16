@@ -57,5 +57,5 @@ export default function Signin() {
         <Button>Signin</Button>
       </Container>
     </form>
-  </div>
+  </div>;
 }

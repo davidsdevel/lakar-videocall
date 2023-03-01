@@ -15,8 +15,6 @@ jobs:
     env:
         REPO_SOURCE: ${{ secrets.GLITCH_REPO }}
         GLITCH_SECRET: ${{ secrets.GLITCH_SECRET }}
-
-    runs-on: ubuntu-latest
     outputs:
       signaling: ${{ steps.filter.outputs.signaling }}
     steps:
@@ -35,7 +33,7 @@ jobs:
 
   deploy-signaling:
     runs-on: ubuntu-latest
-    needs: changes
+    needs: check
     if: ${{ needs.changes.outputs.signaling == 'true' }}
     steps:
       - name: Check out code
@@ -52,4 +50,3 @@ jobs:
 
       - run: npx glitch-deploy-tool from-local -p ./apps/signaling -r $REPO_SOURCE -v
       - run: 'curl -X POST https://lakar.glitch.me/git -H "content-type: application/json" -d "{\"secret\": \"$GLITCH_SECRET\"}"'
-

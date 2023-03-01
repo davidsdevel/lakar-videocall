@@ -1,3 +1,5 @@
+import {FaPhone} from 'react-icons/fa';
+
 import Phone from '@/components/icons/phone';
 import Send from '@/components/icons/send';
 import Menu from '@/components/dashboard/menu';
@@ -30,19 +32,19 @@ export default function Contacts({friends, onAction, onAddFriend}) {
       </div>
     }
     {
-      friends.concat(friends, friends, friends, friends, friends).map(({username, profilePicture, online, _id}, i) => {
-        return <li className='flex items-center py-4 bg-white px-8 py-4 rounded-lg my-1' key={_id + i}>
-          <img src={profilePicture} className='w-20 h-20 rounded-full' alt=''/>
+      friends.map(({username, profilePicture, online, _id}, i) => {
+        return <li className='flex items-center py-4 bg-white px-2 md:px-8 py-4 rounded-lg my-1' key={_id + i}>
+          <img src={profilePicture} className='w-16 h-16 rounded-full' alt=''/>
           <div className='grow px-4 flex items-center'>
             <div className={`${online ? 'bg-green-500' : 'bg-red-600'} w-4 h-4 rounded-full mr-2`}/>
             <span>{username}</span>
           </div>
           <div>
             {/*<button className='mx-2' onClick={() => onAction('messages', _id)}>
-                          <Send height='32'/>
-                        </button>*/}
+              <Send height='32'/>
+            </button>}*/}
             <button className='mx-2' onClick={() => onAction('call', _id)}>
-              <Phone height='32'/>
+              <FaPhone className='text-main-500 h-8 w-8'/>
             </button>
           </div>
         </li>;

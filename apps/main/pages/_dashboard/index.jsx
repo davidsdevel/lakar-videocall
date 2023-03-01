@@ -46,7 +46,7 @@ function Container() {
   if (loading)
     return <Loading/>;
 
-  return <div className='fixed h-full w-full flex flex-col'>
+  return <div className='fixed h-full w-full flex flex-col md:flex-row md:items-center'>
     <Profile username={user.username} profilePicture={user.profilePicture}/>
     <Contacts
       onAction={(tab, id) => {

@@ -1,6 +1,7 @@
 import {useState} from 'react';
 import {signIn} from 'next-auth/react';
 import Router from 'next/router';
+import Link from 'next/link';
 import Container from '@/components/container';
 import Input from '@/components/input';
 import Button from '@/components/button';
@@ -30,9 +31,12 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  return <div className='flex justify-center items-center absolute w-full h-full'>
-    <form onSubmit={e => login(e, email, password)}>
-      <Container direction='column' className='rounded border p-4'>
+  return <div className='flex absolute w-full h-full'>
+    <div className='h-full bg-white flex flex-col items-center justify-center px-24'>
+      <div className='mb-8 text-center'>
+        <span className='text-2xl text-gray-600'>Log in to your account</span>
+      </div>
+      <form onSubmit={e => login(e, email, password)} className='flex flex-col items-center'>
         <Input
           placeholder='Email'
           type='text'
@@ -45,8 +49,10 @@ export default function Login() {
           onChange={({target: {value}}) => setPassword(value)}
           value={password}
         />
-        <Button>Login</Button>
-      </Container>
-    </form>
+        <Button className='bg-main-500 w-full'>Login</Button>
+        <span className='text-sm'>Don&apos;t have an account? <Link href='/signup'><a className='text-main-500'>Sign up</a></Link></span>
+      </form>
+    </div>
+    <div className='flex-grow flex items-center justify-center bg-center bg-cover' style={{backgroundImage: 'url(/images/lakar-login.jpg)'}}/>
   </div>;
 }

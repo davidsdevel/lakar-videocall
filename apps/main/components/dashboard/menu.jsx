@@ -14,7 +14,7 @@ export default function Menu({onAddFriend}) {
   const socket = useSocket();
 
   return <div className='absolute right-4'>
-    <button className='flex justify-center items-center rounded-full bg-gray-500 h-12 w-12' onClick={() => setShow(true)}>
+    <button className='flex justify-center items-center rounded-full bg-main-500 h-12 w-12' onClick={() => setShow(true)}>
       <Plus height='20' fill='white'/>
     </button>
     <Modal isOpen={show} close={() => setShow(false)}>

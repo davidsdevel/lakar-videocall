@@ -5,13 +5,36 @@ on:
     branches:
       - main
 
+concurrency:
+  group: ci-tests-${{ github.ref }}-1
+  cancel-in-progress: true
+
 jobs:
-  repo-sync:
-    environment:
-      name: https://lakar.glitch.me
+  check:
     env:
-      GLITCH_REPO: ${{secrets.GLITCH_REPO}}
+        REPO_SOURCE: ${{ secrets.GLITCH_REPO }}
+        GLITCH_SECRET: ${{ secrets.GLITCH_SECRET }}
+
     runs-on: ubuntu-latest
+    outputs:
+      signaling: ${{ steps.filter.outputs.signaling }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            signaling:
+              - 'apps/signaling/**'
+
+
+  deploy-signaling:
+    needs: changes
+    if: ${{ needs.changes.outputs.signaling == 'true' }}
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -25,24 +48,6 @@ jobs:
           check-latest: true
           cache: 'yarn'
 
-      - uses: actions/cache@v3
-        id: restore-build
-        with:
-          path: ./.next/cache
-          key: lettercms-${{github.ref_name}}-lakar-${{hashFiles('yarn.lock')}}
-          restore-keys: |
-            lettercms-${{github.ref_name}}-lakar-
-            lettercms-${{github.ref_name}}-
-            lettercms-
+      - run: npx glitch-deploy-tool from-local -p ./apps/signaling -r $REPO_SOURCE -v
+      - run: 'curl -X POST https://lakar.glitch.me/git -H "content-type: application/json" -d "{\"secret\": \"$GLITCH_SECRET\"}"'
 
-      - run: yarn
-      - run: yarn build
-      - run: rm .gitignore
-      - run: echo .next/cache >> .gitignore
-      - run: echo node_modules >> .gitignore
-      - run: git config --global user.email "djgm1206@gmail.com"
-      - run: git config --global user.name "David's Devel"
-      - run: git remote add glitch "$GLITCH_REPO"
-      - run: git add .
-      - run: git commit -m "Deploy"
-      - run: git push glitch main

@@ -113,6 +113,9 @@ export default function Call({onEndCall, friendID, isCaller}) {
   const senderRef = useRef(null);
   const pcRef = useRef(null);
 
+  const remoteStreamRef = useRef(null);
+  const localStreamRef = useRef(null);
+
   const [isFrontalCamera, setIsFrontalCamera] = useState(true);
   const [signaling, setSignaling] = useState('');
   const [isMuted, setIsMuted] = useState(false);
@@ -183,6 +186,9 @@ export default function Call({onEndCall, friendID, isCaller}) {
       localStream => {
         const remoteStream = new MediaStream();
 
+        remoteStreamRef.current = remoteStream;
+        localStreamRef.current = localStream;
+
         receiverRef.current.srcObject = remoteStream;
         senderRef.current.srcObject = localStream;
 
@@ -223,12 +229,12 @@ export default function Call({onEndCall, friendID, isCaller}) {
     };
   }, [socket, endCall, friendID, user._id, isCaller]);
 
-  return <div className='fixed w-full h-full top-0 bg-white flex flex-col'>
-    <div id='main-screen' className='w-full bg-blue-100 grow flex items-center justify-center'>
-      <video ref={receiverRef} poster={friends[friendID].profilePicture} autoPlay muted className='w-full'/>
-      <video ref={senderRef} autoPlay muted className='absolute top-4 right-4 w-24'/>
+  return <div className='fixed w-full h-full top-0 flex flex-col items-center'>
+    <div id='main-screen' className='w-full bg-gray-800 grow flex items-center justify-center'>
+      <video ref={receiverRef} poster={friends[friendID].profilePicture} autoPlay muted/>
+      <video ref={senderRef} autoPlay muted className='absolute top-4 right-4 w-24 md:w-40'/>
     </div>
-    <div className='w-full bg-slate-100 pt-2 pb-4 justify-evenly flex items-center'>
+    <div className='absolute bg-[#fff5] py-2 px-4 justify-between flex items-center rounded-full w-80 bottom-12'>
       <button className='flex items-center justify-center p-4 bg-red-300 rounded-full h-fit' onClick={flipCamera}>
         <FaSync/>
       </button>

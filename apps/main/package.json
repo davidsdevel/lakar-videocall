@@ -1,0 +1,35 @@
+{
+  "name": "lakar-call",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "David's Devel <djgm1206@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "yarn": "^1.22",
+    "node": ">=16"
+  },
+  "scripts": {
+    "start": "set NODE_ENV=production& node index.js",
+    "build": "next build",
+    "lint": "next lint",
+    "dev": "next dev -p 8081"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "jsonwebtoken": "^9.0.0",
+    "mongoose": "5",
+    "next": "12.2.5",
+    "next-auth": "4.15",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.7.1",
+    "socket.io-client": "^4.6.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.8.8",
+    "eslint": "^8.34.0",
+    "eslint-config-next": "12.2.5",
+    "postcss": "^8.4.19",
+    "tailwindcss": "^3.2.4"
+  }
+}

@@ -49,7 +49,7 @@ export default function Login() {
           onChange={({target: {value}}) => setPassword(value)}
           value={password}
         />
-        <Button className='bg-main-500 w-full'>Login</Button>
+        <Button className='bg-main-500 w-full text-white'>Login</Button>
         <span className='text-sm'>Don&apos;t have an account? <Link href='/signup'><a className='text-main-500'>Sign up</a></Link></span>
       </form>
     </div>

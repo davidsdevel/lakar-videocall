@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState, useCallback} from 'react';
 import {useSocket, useUser} from '@/components/dashboard/context';
 import {FaPhoneSlash, FaMicrophone, FaMicrophoneSlash, FaSync, FaVideo, FaVideoSlash} from 'react-icons/fa';
 
@@ -126,7 +126,7 @@ export default function Call({onEndCall, friendID, isCaller}) {
   const socket = useSocket();
   const {user, friends} = useUser();
 
-  const endCall = () => {
+  const endCall = useCallback(() => {
     if (pcRef.current)
       pcRef.current.close();
 
@@ -141,7 +141,7 @@ export default function Call({onEndCall, friendID, isCaller}) {
     }
 
     onEndCall();
-  };
+  }, [onEndCall]);
 
   const flipCamera = async () => {
     if (pcRef.current) {

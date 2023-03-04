@@ -4,7 +4,6 @@ const mongoose = require('mongoose');
 const {Server} = require('socket.io');
 const {createServer} = require('http');
 const express = require('express');
-const crypto = require('crypto');
 const { execSync } = require('child_process');
 const handleConnection = require('./lib/handleConnection');
 
@@ -24,9 +23,9 @@ const mongooseOptions = {
 
 const app = express();
 
-app.use(express.json())
+app.use(express.json());
 
-app.get('/', (req, res) => res.json({hola: 'mundo'}))
+app.get('/', (req, res) => res.json({hola: 'mundo'}));
 app.post('/git', (req, res) => {
   const {secret} = req.body;
 

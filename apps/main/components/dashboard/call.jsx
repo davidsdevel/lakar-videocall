@@ -83,8 +83,8 @@ const joinCall = async (socket, pc, friendID) => {
       pc.addIceCandidate(new RTCIceCandidate(candidate));
   });
 
-  const offer = await new Promise(resolve => socket.emit('get_offer', friendID, resolve));
-  const candidates = await new Promise(resolve => socket.emit('get_candidates', friendID, resolve));
+  const offer = await new Promise(resolve => socket.emit('get-offer', friendID, resolve));
+  const candidates = await new Promise(resolve => socket.emit('get-candidates', friendID, resolve));
 
   await pc.setRemoteDescription(new RTCSessionDescription(offer));
 
@@ -230,11 +230,14 @@ export default function Call({onEndCall, friendID, isCaller}) {
   }, [socket, endCall, friendID, user._id, isCaller]);
 
   return <div className='fixed w-full h-full top-0 flex flex-col items-center'>
-    <div id='main-screen' className='w-full bg-gray-800 grow flex items-center justify-center'>
-      <video ref={receiverRef} poster={friends[friendID].profilePicture} autoPlay muted/>
+    <div id='main-screen' className='w-full h-full bg-gray-800 grow flex items-center justify-center relative'>
+      <div className='fixed w-full h-full flex items-center justify-center'>
+        <img src={friends[friendID].profilePicture}/>
+      </div>
+      <video ref={receiverRef} className='z-10 w-full h-full max-w-full max-h-full' autoPlay/>
       <video ref={senderRef} autoPlay muted className='absolute top-4 right-4 w-24 md:w-40'/>
     </div>
-    <div className='absolute bg-[#fff5] py-2 px-4 justify-between flex items-center rounded-full w-80 bottom-12'>
+    <div className='absolute z-20 bg-[#fff5] py-2 px-4 justify-between flex items-center rounded-full w-80 bottom-12'>
       <button className='flex items-center justify-center p-4 bg-red-300 rounded-full h-fit' onClick={flipCamera}>
         <FaSync/>
       </button>

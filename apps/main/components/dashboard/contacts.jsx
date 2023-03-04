@@ -1,4 +1,4 @@
-import {FaPhone} from 'react-icons/fa';
+import {FaPhone, FaComments} from 'react-icons/fa';
 
 import Phone from '@/components/icons/phone';
 import Send from '@/components/icons/send';
@@ -40,9 +40,9 @@ export default function Contacts({friends, onAction, onAddFriend}) {
             <span>{username}</span>
           </div>
           <div>
-            {/*<button className='mx-2' onClick={() => onAction('messages', _id)}>
-              <Send height='32'/>
-            </button>}*/}
+            <button className='mx-2' onClick={() => onAction('messages', _id)}>
+              <FaComments className='text-main-500 h-8 w-8'/>
+            </button>
             <button className='mx-2' onClick={() => onAction('call', _id)}>
               <FaPhone className='text-main-500 h-8 w-8'/>
             </button>

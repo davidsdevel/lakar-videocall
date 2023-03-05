@@ -12,33 +12,33 @@ const userContraints = {
 };
 
 const RTCconfiguration = {
-      iceServers: [
-        {
-           urls: [
-             'stun:stun.l.google.com:19302',
-             'stun:stun1.l.google.com:19302',
-             'stun:stun2.l.google.com:19302',
-             'stun:stun3.l.google.com:19302',
-             'stun:stun4.l.google.com:19302',
-           ] 
-        },
-        {
-          urls: 'turn:openrelay.metered.ca:80',
-          username: 'openrelayproject',
-          credential: 'openrelayproject',
-        },
-        {
-          urls: 'turn:openrelay.metered.ca:443',
-          username: 'openrelayproject',
-          credential: 'openrelayproject',
-        },
-        {
-          urls: 'turn:openrelay.metered.ca:443?transport=tcp',
-          username: 'openrelayproject',
-          credential: 'openrelayproject',
-        }
-      ]
-    };
+  iceServers: [ 
+    {
+      urls: [
+        'stun:stun.l.google.com:19302',
+        'stun:stun1.l.google.com:19302',
+        'stun:stun2.l.google.com:19302',
+        'stun:stun3.l.google.com:19302',
+        'stun:stun4.l.google.com:19302'
+      ] 
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:80',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:443',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    }
+  ]
+};
 
 const startCall = async (socket, pc, userID, stream, friendID) => {
   pc.onicecandidate = event => {
@@ -232,7 +232,7 @@ export default function Call({onEndCall, friendID, isCaller}) {
   return <div className='fixed w-full h-full top-0 flex flex-col items-center'>
     <div id='main-screen' className='w-full h-full bg-gray-800 grow flex items-center justify-center relative'>
       <div className='fixed w-full h-full flex items-center justify-center'>
-        <img src={friends[friendID].profilePicture}/>
+        <img src={friends[friendID].profilePicture} alt=''/>
       </div>
       <video ref={receiverRef} className='z-10 w-full h-full max-w-full max-h-full' autoPlay/>
       <video ref={senderRef} autoPlay muted className='absolute top-4 right-4 w-24 md:w-40'/>

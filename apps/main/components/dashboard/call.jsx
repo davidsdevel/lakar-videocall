@@ -40,19 +40,18 @@ const RTCconfiguration = {
   ]
 };
 
-const startCall = async (socket, pc, userID, stream, friendID) => {
+const startCall = async (socket, pc, stream, callID) => {
   pc.onicecandidate = event => {
     if (event.candidate)
-      socket.emit('caller', {id: userID, candidate: event.candidate});
+      socket.emit('caller', {callID, candidate: event.candidate});
   };
 
   socket.on('offer-answer', async data => {
-    if (data.id === userID)
-      await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
+    await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
   });
 
-  socket.on('callee', ({id, candidate}) => {
-    if (id === userID && pc.currentRemoteDescription)
+  socket.on('callee', ({candidate}) => {
+    if (pc.currentRemoteDescription)
       pc.addIceCandidate(new RTCIceCandidate(candidate));
   });
 
@@ -65,26 +64,24 @@ const startCall = async (socket, pc, userID, stream, friendID) => {
   };
   
   socket.emit('init-call', {
-    from: userID,
-    to: friendID,
+    callID
     offer
   });
 };
 
-const joinCall = async (socket, pc, friendID) => {
+const joinCall = async (socket, pc, callID) => {
 
   pc.onicecandidate = (event) => {
     if (event.candidate)
-      socket.emit('callee', {friendID, candidate: event.candidate});
+      socket.emit('callee', {callID, candidate: event.candidate});
   };
 
   socket.on('caller', ({id, candidate}) => {
-    if (id === friendID)
-      pc.addIceCandidate(new RTCIceCandidate(candidate));
+    pc.addIceCandidate(new RTCIceCandidate(candidate));
   });
 
-  const offer = await new Promise(resolve => socket.emit('get-offer', friendID, resolve));
-  const candidates = await new Promise(resolve => socket.emit('get-candidates', friendID, resolve));
+  const offer = await new Promise(resolve => socket.emit('get-offer', callID, resolve));
+  const candidates = await new Promise(resolve => socket.emit('get-candidates', callID, resolve));
 
   await pc.setRemoteDescription(new RTCSessionDescription(offer));
 
@@ -92,7 +89,7 @@ const joinCall = async (socket, pc, friendID) => {
   await pc.setLocalDescription(answerDescription);
 
   const answer = {
-    id: friendID,
+    callID
     answer: {
       type: answerDescription.type,
       sdp: answerDescription.sdp,
@@ -212,10 +209,13 @@ export default function Call({onEndCall, friendID, isCaller}) {
 
         localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
 
-        if (isCaller)
-          startCall(socket, pc, user._id, localStream, friendID);
-        else
-          joinCall(socket, pc, friendID);
+        //Get CallID
+        socket.emit('get-call-id', {from: user._id, to: friendID}, callID => {
+          if (isCaller)
+            startCall(socket, pc, localStream, callID);
+          else
+            joinCall(socket, pc, callID);
+        });
       },
       err => {
         alert('You need approve camera access');

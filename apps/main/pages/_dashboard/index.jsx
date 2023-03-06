@@ -9,6 +9,7 @@ import Loading from '@/components/loading';
 function Container() {
   const [tab, setTab] = useState('');
   const [friendID, setFriendID] = useState('');
+  const [callID, setCallID] = useState('');
   const [isCaller, setIsCaller] = useState(false);
   const {loading, user, friends} = useUser();
 
@@ -32,9 +33,10 @@ function Container() {
       };
 
       socket.on('new-friend', handleNewFriend);
-      socket.on('receive-call', id => {
+      socket.on('receive-call', (id, _callID) => {
         setTab('call');
         setFriendID(id);
+        setCallID(_callID);
       });
 
       return () => {
@@ -77,6 +79,7 @@ function Container() {
         }}
         friendID={friendID}
         isCaller={isCaller}
+        callID={callID}
       />
     }
   </div>;

@@ -108,12 +108,10 @@ async function addNewFriend(socket, from, to) {
  *
  * @return {Promise<void>}
  */
-async function initCall(socket, from, to, offer) {
-  offers[from] = offer;
+async function initCall(socket, callID, offer) {  
+  offers[callID] = offer;
 
-  const callID = await getCallID(from, to);
-
-  socket.to(callID).emit('receive-call', from);
+  socket.to(callID).emit('receive-call', from, callID);
 }
 
 /**
@@ -127,13 +125,9 @@ async function initCall(socket, from, to, offer) {
  *
  * @return {Promise<void>}
  */
-async function endCall(socket, from, to) {
-  const callID = await getCallID(from, to);
-
-  delete calls[from];
-  delete calls[to];
-  delete offers[from];
-  delete offers[to];
+async function endCall(socket, callID) {
+  delete calls[callID];
+  delete offers[callID];
 
   socket.to(callID).emit('end-call');
 }
@@ -194,26 +188,32 @@ module.exports = async socket => {
 
   socket.on('sync-friend', ({from, to}) => syncUserToRooms(socket, from, to));
 
-  socket.on('init-call', ({from, to, offer}) => initCall(socket, from, to, offer));
+  socket.on('init-call', ({callID, offer}) => initCall(socket, callID, offer));
 
-  socket.on('caller', ({id, candidate}) => {
-    if (!calls[id])
-      calls[id] = [];
+  socket.on('caller', ({callID, candidate}) => {
+    if (!calls[callID])
+      calls[callID] = [];
 
-    calls[id].push(candidate);
+    calls[callID].push(candidate);
 
-    socket.emit('caller', {id, candidate});
+    socket.to(callID).emit('caller', {callID, candidate});
   });
 
-  socket.on('callee', data => socket.emit('callee', data));
+  socket.on('callee', data => socket.to(data.callID).emit('callee', data));
   
-  socket.on('get-offer', (id, cb) => cb(offers[id]));
+  socket.on('get-offer', (callID, cb) => cb(offers[callID]));
   
-  socket.on('get-candidates', (id, cb) => cb(calls[id]));
+  socket.on('get-candidates', (callID, cb) => cb(calls[callID]));
   
-  socket.on('answer', data => myRoom.emit('offer-answer', data));
+  socket.on('answer', data => socket.to(data.callID).emit('offer-answer', data));
+
+  socket.on('get-call-id', ({from, to}), async cb => {
+    const callID = await getCallID(from, to);
+
+    cb(callID);
+  })
   
-  socket.on('end-call', ({from, to}) => endCall(socket, from, to));
+  socket.on('end-call', ({callID}) => endCall(socket, callID));
 
   socket.on('send-message', ({from, to, message}) => sendMessage(socket, message, from, to));
 

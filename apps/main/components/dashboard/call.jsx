@@ -231,6 +231,11 @@ export default function Call({onEndCall, friendID, isCaller}) {
 
   return <div className='fixed w-full h-full top-0 flex flex-col items-center'>
     <div id='main-screen' className='w-full h-full bg-gray-800 grow flex items-center justify-center relative'>
+      <div className='fixed top-4 left-4 bg-[#0003] p-4 rounded-lg text-white fot-bold z-30'>
+        <div>Status: {status}</div>
+        <div>Signaling: {signaling}</div>
+        <div>ICE: {ice}</div>
+      </div>  
       <div className='fixed w-full h-full flex items-center justify-center'>
         <img src={friends[friendID].profilePicture} alt=''/>
       </div>

@@ -19,7 +19,7 @@ async function login(e, email, password) {
     if (!ok)
       return alert('Error on login');
 
-    Router.push('/');
+    location.reload();
   } catch(err) {
     alert('Error on login');
 

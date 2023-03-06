@@ -106,7 +106,7 @@ const joinCall = async (socket, pc, callID) => {
   });
 };
 
-export default function Call({onEndCall, friendID, isCaller}) {
+export default function Call({onEndCall, friendID, isCaller, callID}) {
   const receiverRef = useRef(null);
   const senderRef = useRef(null);
   const pcRef = useRef(null);
@@ -215,7 +215,6 @@ export default function Call({onEndCall, friendID, isCaller}) {
             socket.emit('get-call-id', {from: user._id, to: friendID}, callID => {
               startCall(socket, pc, localStream, callID, friendID);
             });
-
           } else {
             joinCall(socket, pc, callID);
           }

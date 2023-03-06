@@ -52,7 +52,7 @@ export default function Messages({onCloseMessages, friendID}) {
   }, [friendID, socket]);
 
   return <div className='fixed w-full h-full bg-slate-100 top-0 left-0 flex flex-col md:flex-row'>
-    <div className='md:w-1/3 bg-slate-400'>
+    <div className='md:w-1/3 bg-slate-400 z-10'>
       <div className='p-2 flex items-center bg-slate-300'>
         <div className='relative flex items-center'>
           <button onClick={onCloseMessages}>

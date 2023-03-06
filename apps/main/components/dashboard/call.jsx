@@ -40,7 +40,7 @@ const RTCconfiguration = {
   ]
 };
 
-const startCall = async (socket, pc, stream, callID) => {
+const startCall = async (socket, pc, stream, callID, from) => {
   pc.onicecandidate = event => {
     if (event.candidate)
       socket.emit('caller', {callID, candidate: event.candidate});
@@ -64,7 +64,8 @@ const startCall = async (socket, pc, stream, callID) => {
   };
   
   socket.emit('init-call', {
-    callID
+    callID,
+    from
     offer
   });
 };
@@ -210,12 +211,14 @@ export default function Call({onEndCall, friendID, isCaller}) {
         localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
 
         //Get CallID
-        socket.emit('get-call-id', {from: user._id, to: friendID}, callID => {
-          if (isCaller)
-            startCall(socket, pc, localStream, callID);
-          else
+          if (isCaller) {
+            socket.emit('get-call-id', {from: user._id, to: friendID}, callID => {
+              startCall(socket, pc, localStream, callID, user._id);
+            });
+
+          } else {
             joinCall(socket, pc, callID);
-        });
+          }
       },
       err => {
         alert('You need approve camera access');

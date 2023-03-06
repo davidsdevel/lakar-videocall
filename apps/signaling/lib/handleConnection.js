@@ -102,13 +102,13 @@ async function addNewFriend(socket, from, to) {
  * Init Call
  *
  * @param {Socket} socket
- * @param {String} from
- * @param {String} to
+ * @param {String} string
  * @param {RTCSessionDescription}
+ * @param {String} from
  *
  * @return {Promise<void>}
  */
-async function initCall(socket, callID, offer) {  
+async function initCall(socket, callID, offer, from) {  
   offers[callID] = offer;
 
   socket.to(callID).emit('receive-call', from, callID);
@@ -120,8 +120,7 @@ async function initCall(socket, callID, offer) {
  * @description Ends call, remove offers and candidates 
  *
  * @param {Socket} socket
- * @param {String} from
- * @param {String} to
+ * @param {String} callID
  *
  * @return {Promise<void>}
  */
@@ -188,7 +187,7 @@ module.exports = async socket => {
 
   socket.on('sync-friend', ({from, to}) => syncUserToRooms(socket, from, to));
 
-  socket.on('init-call', ({callID, offer}) => initCall(socket, callID, offer));
+  socket.on('init-call', ({callID, offer, from}) => initCall(socket, callID, offer, from));
 
   socket.on('caller', ({callID, candidate}) => {
     if (!calls[callID])

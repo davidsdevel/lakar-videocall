@@ -33,10 +33,9 @@ function Container() {
       };
 
       socket.on('new-friend', handleNewFriend);
-      socket.on('receive-call', (id, _callID) => {
+      socket.on('receive-call', id => {
         setTab('call');
         setFriendID(id);
-        setCallID(_callID);
       });
 
       return () => {

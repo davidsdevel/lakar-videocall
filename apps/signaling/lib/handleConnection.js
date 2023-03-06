@@ -1,4 +1,5 @@
 const users = require('./models/users');
+const messages = require('./models/messages');
 
 const calls = {};
 const offers = {};
@@ -150,6 +151,31 @@ async function disconnectUser(room, id) {
   room.emit('friend-offline', id);
 }
 
+/**
+ * Send Message
+ *
+ * @param {Socket} socket
+ * @param {String} message
+ * @param {String} from
+ * @param {String} to
+ *
+ * @return {String}
+ */
+async function sendMessage(socket, message, from, to) {
+  const callID = await getCallID(from, to);
+  //TODO: Add message to DB
+
+  socket.to(callID).emit(`message:${from}`, {
+    user: {
+      _id: from
+    },
+    channel: callID,
+    content: message,
+    time: new Date(),
+    received: true
+  });
+}
+
 module.exports = async socket => {
   const {id: myId} = socket.handshake.auth;
 
@@ -186,6 +212,8 @@ module.exports = async socket => {
   socket.on('answer', data => myRoom.emit('offer-answer', data));
   
   socket.on('end-call', ({from, to}) => endCall(socket, from, to));
+
+  socket.on('send-message', ({from, to, message}) => sendMessage(socket, message, from, to));
 
   socket.on('disconnecting', () => disconnectUser(myRoom, myId));
 };

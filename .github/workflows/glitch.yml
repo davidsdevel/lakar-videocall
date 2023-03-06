@@ -10,31 +10,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check:
+  deploy-signaling:
     runs-on: ubuntu-latest
     env:
         REPO_SOURCE: ${{ secrets.GLITCH_REPO }}
         GLITCH_SECRET: ${{ secrets.GLITCH_SECRET }}
-    outputs:
-      signaling: ${{ steps.filter.outputs.signaling }}
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
-
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          filters: |
-            signaling:
-              - 'apps/signaling/**'
-
-
-  deploy-signaling:
-    runs-on: ubuntu-latest
-    needs: check
-    if: ${{ needs.changes.outputs.signaling == 'true' }}
     steps:
       - name: Check out code
         uses: actions/checkout@v3

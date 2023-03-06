@@ -90,7 +90,7 @@ const joinCall = async (socket, pc, callID) => {
   await pc.setLocalDescription(answerDescription);
 
   const answer = {
-    callID
+    callID,
     answer: {
       type: answerDescription.type,
       sdp: answerDescription.sdp,
@@ -212,8 +212,8 @@ export default function Call({onEndCall, friendID, isCaller, callID}) {
 
         //Get CallID
           if (isCaller) {
-            socket.emit('get-call-id', {from: user._id, to: friendID}, callID => {
-              startCall(socket, pc, localStream, callID, friendID);
+            socket.emit('get-call-id', {from: user._id, to: friendID}, _callID => {
+              startCall(socket, pc, localStream, _callID, friendID);
             });
           } else {
             joinCall(socket, pc, callID);
@@ -229,7 +229,7 @@ export default function Call({onEndCall, friendID, isCaller, callID}) {
       senderRef.current = null;
       receiverRef.current = null;
     };
-  }, [socket, endCall, friendID, user._id, isCaller]);
+  }, [socket, endCall, friendID, user._id, isCaller, callID]);
 
   return <div className='fixed w-full h-full top-0 flex flex-col items-center'>
     <div id='main-screen' className='w-full h-full bg-gray-800 grow flex items-center justify-center relative'>

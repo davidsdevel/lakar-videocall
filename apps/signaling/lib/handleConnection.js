@@ -208,6 +208,7 @@ module.exports = async socket => {
 
   socket.on('get-call-id', async ({from, to}, cb) => {
     const callID = await getCallID(from, to);
+    console.log(callID)
 
     cb(callID);
   })

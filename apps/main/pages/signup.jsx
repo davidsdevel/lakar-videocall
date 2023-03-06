@@ -63,6 +63,6 @@ export default function Signup() {
         <span className='text-sm'>Already have an account? <Link href='/login'><a className='text-main-500'>Log In</a></Link></span>
       </form>
     </div>
-    <div className='flex-grow flex items-center justify-center bg-center bg-cover' style={{backgroundImage: 'url(/images/lakar-login.jpg)'}}/>
+    <div className='flex-grow flex items-center justify-center bg-center bg-cover' style={{backgroundImage: 'url(/images/lakar-login.webp)'}}/>
   </div>;
 }

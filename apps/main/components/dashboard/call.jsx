@@ -212,8 +212,9 @@ export default function Call({onEndCall, friendID, isCaller}) {
 
         //Get CallID
         socket.emit('get-call-id', {from: user._id, to: friendID}, _callID => {
+          console.log(_callID);
           if (isCaller) {
-            startCall(socket, pc, localStream, _callID, friendID);
+            startCall(socket, pc, localStream, _callID, user._id);
           } else {
             joinCall(socket, pc, callID);
           }
@@ -223,6 +224,7 @@ export default function Call({onEndCall, friendID, isCaller}) {
         alert('You need approve camera access');
       }
     );
+
 
     return () => {
       pcRef.current = null;

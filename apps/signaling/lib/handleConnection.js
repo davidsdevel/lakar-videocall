@@ -108,10 +108,10 @@ async function addNewFriend(socket, from, to) {
  *
  * @return {Promise<void>}
  */
-async function initCall(socket, callID, offer, from) {  
+async function initCall(socket, callID, offer, to) {  
   offers[callID] = offer;
 
-  socket.to(callID).emit('receive-call', from, callID);
+  socket.to(callID).emit('receive-call', to, callID);
 }
 
 /**
@@ -187,7 +187,7 @@ module.exports = async socket => {
 
   socket.on('sync-friend', ({from, to}) => syncUserToRooms(socket, from, to));
 
-  socket.on('init-call', ({callID, offer, from}) => initCall(socket, callID, offer, from));
+  socket.on('init-call', ({callID, offer, to}) => initCall(socket, callID, offer, to));
 
   socket.on('caller', ({callID, candidate}) => {
     if (!calls[callID])

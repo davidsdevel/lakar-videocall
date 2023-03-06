@@ -40,7 +40,7 @@ const RTCconfiguration = {
   ]
 };
 
-const startCall = async (socket, pc, stream, callID, from) => {
+const startCall = async (socket, pc, stream, callID, to) => {
   pc.onicecandidate = event => {
     if (event.candidate)
       socket.emit('caller', {callID, candidate: event.candidate});
@@ -65,7 +65,7 @@ const startCall = async (socket, pc, stream, callID, from) => {
   
   socket.emit('init-call', {
     callID,
-    from
+    to,
     offer
   });
 };
@@ -213,7 +213,7 @@ export default function Call({onEndCall, friendID, isCaller}) {
         //Get CallID
           if (isCaller) {
             socket.emit('get-call-id', {from: user._id, to: friendID}, callID => {
-              startCall(socket, pc, localStream, callID, user._id);
+              startCall(socket, pc, localStream, callID, friendID);
             });
 
           } else {

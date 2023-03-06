@@ -207,7 +207,7 @@ module.exports = async socket => {
   
   socket.on('answer', data => socket.to(data.callID).emit('offer-answer', data));
 
-  socket.on('get-call-id', ({from, to}), async cb => {
+  socket.on('get-call-id', {from, to}, async cb => {
     const callID = await getCallID(from, to);
 
     cb(callID);

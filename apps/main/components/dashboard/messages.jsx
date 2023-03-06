@@ -31,51 +31,6 @@ function normalizeMessages(messages) {
   return parsedMessages;
 }
 
-/*const messagesList = [
-  {
-    username: 'hola-mundo',
-    content: 'Hola Mundo'
-  },
-  {
-    username: 'hola-mundo',
-    content: 'Este es un mensaje de prueba 1'
-  },
-  {
-    username: 'hola-mundo',
-    content: 'Este es un mensaje de prueba 2'
-  },
-  {
-    username: 'hola-mundo',
-    content: 'Este es un mensaje de prueba 3'
-  },
-  {
-    username: 'davidsdevel',
-    content: 'Este es un mensaje de prueba 4'
-  },
-  {
-    username: 'davidsdevel',
-    content: 'Este es otro mensaje que habia olvidado enviar'
-  },
-  {
-    username: 'hola-mundo',
-    content: 'Este es un mensaje de prueba 5'
-  },
-  {
-    username: 'hola-mundo',
-    content: 'Este es un mensaje de prueba 6'
-  },
-  {
-    username: 'hola-mundo',
-    content: 'Este es un mensaje'
-  },
-  {
-    username: 'davidsdevel',
-    content: 'Hola'
-  },
-];
-
-const username =  'davidsdevel';*/
-
 export default function Messages({onCloseMessages, friendID}) {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
@@ -114,8 +69,8 @@ export default function Messages({onCloseMessages, friendID}) {
         </button>
       </div>
     </div>
-    <div className='flex-grow flex flex-col md:w-2/3'>
-      <ul className='px-4 overflow-y-scroll flex-grow'>
+    <div className='flex-grow flex flex-col md:w-2/3 absolute w-full h-full pt-20 md:pt-0 md:right-0'>
+      <ul className='px-4 overflow-y-scroll flex-grow max-h-full'>
         {
           normalizeMessages(messages).map((e, i) => {
             const isUser = e.id === user._id;
@@ -136,6 +91,9 @@ export default function Messages({onCloseMessages, friendID}) {
       <div id='message-box' className='flex items-center p-2 bg-slate-300 w-full'>
         <Input type='texarea' className='grow mr-4' onChange={({target: {value}}) => setMessage(value)} value={message}/>
         <button className='bg-main-500 p-4 rounded-full' onClick={() => {
+          if (message === '')
+            return;
+
           socket.emit('send-message', {message, from: user._id, to: friendID});
 
           setMessages(prev => {

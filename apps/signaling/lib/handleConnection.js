@@ -201,6 +201,8 @@ module.exports = async socket => {
       calls[id] = [];
 
     calls[id].push(candidate);
+
+    socket.emit('caller', {id, candidate});
   });
 
   socket.on('callee', data => socket.emit('callee', data));

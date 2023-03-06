@@ -106,7 +106,7 @@ const joinCall = async (socket, pc, callID) => {
   });
 };
 
-export default function Call({onEndCall, friendID, isCaller, callID}) {
+export default function Call({onEndCall, friendID, isCaller}) {
   const receiverRef = useRef(null);
   const senderRef = useRef(null);
   const pcRef = useRef(null);
@@ -211,13 +211,13 @@ export default function Call({onEndCall, friendID, isCaller, callID}) {
         localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
 
         //Get CallID
+        socket.emit('get-call-id', {from: user._id, to: friendID}, _callID => {
           if (isCaller) {
-            socket.emit('get-call-id', {from: user._id, to: friendID}, _callID => {
-              startCall(socket, pc, localStream, _callID, friendID);
-            });
+            startCall(socket, pc, localStream, _callID, friendID);
           } else {
             joinCall(socket, pc, callID);
           }
+        });
       },
       err => {
         alert('You need approve camera access');
@@ -229,7 +229,7 @@ export default function Call({onEndCall, friendID, isCaller, callID}) {
       senderRef.current = null;
       receiverRef.current = null;
     };
-  }, [socket, endCall, friendID, user._id, isCaller, callID]);
+  }, [socket, endCall, friendID, user._id, isCaller]);
 
   return <div className='fixed w-full h-full top-0 flex flex-col items-center'>
     <div id='main-screen' className='w-full h-full bg-gray-800 grow flex items-center justify-center relative'>

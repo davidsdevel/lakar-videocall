@@ -111,7 +111,7 @@ async function addNewFriend(socket, from, to) {
 async function initCall(socket, callID, offer, to) {  
   offers[callID] = offer;
 
-  socket.to(callID).emit('receive-call', to, callID);
+  socket.to(callID).emit('receive-call', to);
 }
 
 /**

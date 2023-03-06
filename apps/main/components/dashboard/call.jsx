@@ -241,7 +241,7 @@ export default function Call({onEndCall, friendID, isCaller}) {
         <div>ICE: {ice}</div>
       </div>  
       <div className='fixed w-full h-full flex items-center justify-center'>
-        <img src={friends[friendID].profilePicture} alt=''/>
+        <img src={friends[friendID].profilePicture} alt='' className='rounded-full'/>
       </div>
       <video ref={receiverRef} className='z-10 w-full h-full max-w-full max-h-full' autoPlay/>
       <video ref={senderRef} autoPlay muted className='absolute top-4 right-4 w-24 md:w-40'/>

@@ -77,7 +77,7 @@ export default function Messages({onCloseMessages, friendID}) {
 
             return <li key={`message-${i}`} className={`flex my-4 ${isUser ? 'flex-row-reverse' : ''}`}>
               <div className='w-12 h-12 rounded-full shrink-0 basis-auto grow-0'>
-                <img src={isUser ? user.profilePicture : profilePicture} alt=''/>
+                <img src={isUser ? user.profilePicture : profilePicture} alt='' className='rounded-full'/>
               </div>
               <ul className={`mx-2 flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
                 {e.messages.map(j => <li key={j} className={'border bg-white shadow mb-2 rounded-2xl p-4 items-start w-fit'}>

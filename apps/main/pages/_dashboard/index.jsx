@@ -10,6 +10,7 @@ function Container() {
   const [tab, setTab] = useState('');
   const [friendID, setFriendID] = useState('');
   const [callID, setCallID] = useState('');
+  const [messageChannel, setMessageChannel] = useState('');
   const [isCaller, setIsCaller] = useState(false);
   const {loading, user, friends} = useUser();
 
@@ -50,9 +51,12 @@ function Container() {
   return <div className='fixed h-full w-full flex flex-col md:flex-row md:items-center'>
     <Profile username={user.username} profilePicture={user.profilePicture}/>
     <Contacts
-      onAction={(tab, id) => {
+      onAction={(tab, id, channel) => {
         if (tab === 'call' && !friends[id]?.online)
           return alert('User offline');
+
+        if (channel)
+          setMessageChannel(channel);
 
         setTab(tab);
         setFriendID(id);
@@ -68,6 +72,7 @@ function Container() {
           setFriendID('');
         }}
         friendID={friendID}
+        channel={messageChannel}
       />
     }
     {  tab === 'call' &&

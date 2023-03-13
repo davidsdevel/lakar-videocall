@@ -212,7 +212,6 @@ export default function Call({onEndCall, friendID, isCaller}) {
 
         //Get CallID
         socket.emit('get-call-id', {from: user._id, to: friendID}, _callID => {
-          console.log(_callID);
           if (isCaller) {
             startCall(socket, pc, localStream, _callID, user._id);
           } else {

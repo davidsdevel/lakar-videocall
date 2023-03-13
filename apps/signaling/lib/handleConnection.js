@@ -156,17 +156,20 @@ async function disconnectUser(room, id) {
  */
 async function sendMessage(socket, message, from, to) {
   const callID = await getCallID(from, to);
-  //TODO: Add message to DB
+
+  const data = {
+    user: from,
+    channel: callID,
+    time: new Date(),
+    content: message
+  };
 
   socket.to(callID).emit(`message:${from}`, {
-    user: {
-      _id: from
-    },
-    channel: callID,
-    content: message,
-    time: new Date(),
-    received: true
+    user: from,
+    ...data
   });
+
+  await messages.create(data);
 }
 
 module.exports = async socket => {
@@ -208,10 +211,9 @@ module.exports = async socket => {
 
   socket.on('get-call-id', async ({from, to}, cb) => {
     const callID = await getCallID(from, to);
-    console.log(callID)
 
     cb(callID);
-  })
+  });
   
   socket.on('end-call', ({callID}) => endCall(socket, callID));
 

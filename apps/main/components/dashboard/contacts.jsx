@@ -32,7 +32,7 @@ export default function Contacts({friends, onAction, onAddFriend}) {
       </div>
     }
     {
-      friends.map(({username, profilePicture, online, _id}, i) => {
+      friends.map(({username, profilePicture, online, _id, channel}, i) => {
         return <li className='flex items-center py-4 bg-white px-2 md:px-8 py-4 rounded-lg my-1' key={_id + i}>
           <img src={profilePicture} className='w-16 h-16 rounded-full' alt=''/>
           <div className='grow px-4 flex items-center'>
@@ -40,7 +40,7 @@ export default function Contacts({friends, onAction, onAddFriend}) {
             <span>{username}</span>
           </div>
           <div>
-            <button className='mx-2' onClick={() => onAction('messages', _id)}>
+            <button className='mx-2' onClick={() => onAction('messages', _id, channel)}>
               <FaComments className='text-main-500 h-8 w-8'/>
             </button>
             <button className='mx-2' onClick={() => onAction('call', _id)}>

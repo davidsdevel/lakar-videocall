@@ -49,7 +49,7 @@ async function init() {
   await mongoose.connect(MONGO_URL, mongooseOptions);
 
   httpServer
-    .listen(port, () => console.log(`> Ready on http://localhost:${port}`));
+    .listen(port, () => console.log(`> Ready on http://localhost:${port}`)); //eslint-disable-line
 }
 
 init();

@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import {useFriends, useUser} from '@/components/dashboard/context';
 import {FaPhone, FaChevronLeft} from 'react-icons/fa';
 import Send from '@/components/icons/send';
@@ -11,16 +11,16 @@ function normalizeMessages(messages) {
   let actualID = null;
 
   messages.forEach((e, i) => {
-    if (actualID !== e.user._id)
-      actualID = e.user._id;
+    if (actualID !== e.user)
+      actualID = e.user;
 
     actualMessageList.push(e.content);
 
     const nextMessage = messages[i+1];
 
-    if (!nextMessage || nextMessage?.user._id !== e.user._id) {
+    if (!nextMessage || nextMessage?.user !== e.user) {
       parsedMessages.push({
-        id: e.user._id,
+        id: e.user,
         messages: actualMessageList
       });
 
@@ -31,11 +31,21 @@ function normalizeMessages(messages) {
   return parsedMessages;
 }
 
-export default function Messages({onCloseMessages, friendID}) {
+export default function Messages({onCloseMessages, friendID, channel}) {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const {username, profilePicture, online} = useFriends(friendID);
   const {user, socket} = useUser();
+
+  const messagesRef = useRef(null);
+
+  useEffect(() => {
+    fetch(`/api/message/${channel}`)
+      .then(e => e.json())
+      .then(({data}) => {
+        setMessages(data);
+      });
+  }, [channel]);
 
   useEffect(() => {
     const handleMessage = data => {
@@ -70,17 +80,17 @@ export default function Messages({onCloseMessages, friendID}) {
       </div>
     </div>
     <div className='flex-grow flex flex-col md:w-2/3 absolute w-full h-full pt-20 md:pt-0 md:right-0'>
-      <ul className='px-4 overflow-y-scroll flex-grow max-h-full'>
+      <ul className='px-4 overflow-y-scroll flex-grow max-h-full' ref={messagesRef}>
         {
           normalizeMessages(messages).map((e, i) => {
-            const isUser = e.id === user._id;
+            const isActualUser = e.id === user._id;
 
-            return <li key={`message-${i}`} className={`flex my-4 ${isUser ? 'flex-row-reverse' : ''}`}>
+            return <li key={`message-${i}`} className={`flex my-4 ${isActualUser ? 'flex-row-reverse' : ''}`}>
               <div className='w-12 h-12 rounded-full shrink-0 basis-auto grow-0'>
-                <img src={isUser ? user.profilePicture : profilePicture} alt='' className='rounded-full'/>
+                <img src={isActualUser ? user.profilePicture : profilePicture} alt='' className='rounded-full'/>
               </div>
-              <ul className={`mx-2 flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
-                {e.messages.map(j => <li key={j} className={'border bg-white shadow mb-2 rounded-2xl p-4 items-start w-fit'}>
+              <ul className={`mx-2 flex flex-col ${isActualUser ? 'items-end' : 'items-start'}`}>
+                {e.messages.map(j => <li key={j} className={'border bg-white mb-2 rounded-2xl p-4 items-start w-fit'}>
                   <span>{j}</span>
                 </li>)}
               </ul>
@@ -99,13 +109,17 @@ export default function Messages({onCloseMessages, friendID}) {
           setMessages(prev => {
             return prev.concat([
               {
-                user,
+                user: user._id,
                 content: message,
               }
             ]);
           });
 
           setMessage('');
+
+          setTimeout(() => {
+            messagesRef.current.scrollTo(0, messagesRef.current.scrollHeight);
+          }, 0);
         }}>
           <Send height='24' fill='white'/>
         </button>

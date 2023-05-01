@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 
 const userSchema = new mongoose.Schema({
   username: {
@@ -51,7 +50,7 @@ userSchema.statics.login = async function login(email, userPassword) {
       success: false
     };
 
-  const {password, _id} = searchRes;
+  const {password} = searchRes;
 
   const passwordMatch = await bcrypt.compare(userPassword, password);
 

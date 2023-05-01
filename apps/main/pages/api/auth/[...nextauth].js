@@ -28,7 +28,7 @@ export const authOptions = {
     strategy: 'jwt'
   },
   callbacks: {
-    async jwt({token, user, account}) {
+    async jwt({token, user}) {
       //console.log(token, user)
 
       if (token.user)
@@ -38,7 +38,7 @@ export const authOptions = {
         user: {sub: token.sub, ...user}
       };
     },
-    async session({session, token, user}) {
+    async session({session, token}) {
       session.user = token.user;
 
       //console.log(session, token);
@@ -52,7 +52,7 @@ export const authOptions = {
         email: { label: 'Email', type: 'email', placeholder: 'email@email.com' },
         password: {  label: 'Password', type: 'password' }
       },
-      authorize: async ({email, password}, req) => {
+      authorize: async ({email, password}) => {
         try {
           await connect();
 

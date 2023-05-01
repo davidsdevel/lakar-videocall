@@ -1,8 +1,6 @@
 import {useState} from 'react';
 import {signIn} from 'next-auth/react';
-import Router from 'next/router';
 import Link from 'next/link';
-import Container from '@/components/container';
 import Input from '@/components/input';
 import Button from '@/components/button';
 

@@ -68,7 +68,6 @@ export async function addFriend(id, friendID) {
 }
 
 export function DashboardProvider({children}) {
-  const [token, setToken] = useState('');
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [friends, setFriends] = useState({});
@@ -151,7 +150,6 @@ export function DashboardProvider({children}) {
       })),
     },
     friends,
-    token,
     socket: socket.current
   };
 

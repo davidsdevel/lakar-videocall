@@ -9,7 +9,12 @@
     "apps/*"
   ],
   "scripts": {
-    "dev": "node ./scripts/run-dev"
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint -- --fix"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "turbo": "^1.9.3"
+  }
 }

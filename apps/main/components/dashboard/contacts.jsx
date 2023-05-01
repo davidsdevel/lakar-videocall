@@ -1,7 +1,4 @@
 import {FaPhone, FaComments} from 'react-icons/fa';
-
-import Phone from '@/components/icons/phone';
-import Send from '@/components/icons/send';
 import Menu from '@/components/dashboard/menu';
 
 export default function Contacts({friends, onAction, onAddFriend}) {

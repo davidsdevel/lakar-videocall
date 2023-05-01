@@ -1,15 +1,14 @@
 import {useState} from 'react';
-import {useUser, addFriend, useSocket} from '@/components/dashboard/context';
+import {useUser, useSocket} from '@/components/dashboard/context';
 import Plus from '@/components/icons/plus';
 import Modal from '@/components/modal';
 import Input from '@/components/input';
 import Button from '@/components/button';
-import cookie from 'cookie';
 
 export default function Menu({onAddFriend}) {
   const [show, setShow] = useState(false);
   const [friendID, setFriendID] = useState('');
-  const {loading, user} = useUser();
+  const {user} = useUser();
 
   const socket = useSocket();
 

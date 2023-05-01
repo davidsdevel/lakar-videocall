@@ -77,7 +77,7 @@ const joinCall = async (socket, pc, callID) => {
       socket.emit('callee', {callID, candidate: event.candidate});
   };
 
-  socket.on('caller', ({id, candidate}) => {
+  socket.on('caller', ({candidate}) => {
     pc.addIceCandidate(new RTCIceCandidate(candidate));
   });
 
@@ -115,11 +115,11 @@ export default function Call({onEndCall, friendID, isCaller}) {
   const localStreamRef = useRef(null);
 
   const [isFrontalCamera, setIsFrontalCamera] = useState(true);
-  const [signaling, setSignaling] = useState('');
+  const [signalingState, setSignalingState] = useState('');
   const [isMuted, setIsMuted] = useState(false);
-  const [status, setStatus] = useState('');
-  const [hasVideo, setHasVideo] = useState(true);
-  const [ice, setIce] = useState('');
+  const [connectionState, setConnectionState] = useState('');
+  const [hasVideo/*, setHasVideo*/] = useState(true);
+  const [iceConnectionState, setIceConnectionState] = useState('');
 
   const socket = useSocket();
   const {user, friends} = useUser();
@@ -194,17 +194,10 @@ export default function Call({onEndCall, friendID, isCaller}) {
 
         pcRef.current = pc;
 
-        pc.addEventListener('track', event => event.streams[0].getTracks().forEach(track => remoteStream.addTrack(track)));
-
-        pc.onconnectionstatechange = e => {
-          setStatus(pc.connectionState);
-        };
-        pc.onsignalingstatechange = e => {
-          setSignaling(pc.signalingState);
-        };
-        pc.oniceconnectionstatechange = e => {
-          setIce(pc.iceConnectionState);
-        };
+        pc.ontrack = e => e.streams[0].getTracks().forEach(track => remoteStream.addTrack(track));
+        pc.oniceconnectionstatechange = () => setIceConnectionState(pc.iceConnectionState);
+        pc.onconnectionstatechange = () => setConnectionState(pc.connectionState);
+        pc.onsignalingstatechange = () => setSignalingState(pc.signalingState);
 
         socket.on('end-call', endCall);
 
@@ -219,9 +212,7 @@ export default function Call({onEndCall, friendID, isCaller}) {
           }
         });
       },
-      err => {
-        alert('You need approve camera access');
-      }
+      () => alert('You need approve camera access')
     );
 
 
@@ -235,9 +226,9 @@ export default function Call({onEndCall, friendID, isCaller}) {
   return <div className='fixed w-full h-full top-0 flex flex-col items-center'>
     <div id='main-screen' className='w-full h-full bg-gray-800 grow flex items-center justify-center relative'>
       <div className='fixed top-4 left-4 bg-[#0003] p-4 rounded-lg text-white fot-bold z-30'>
-        <div>Status: {status}</div>
-        <div>Signaling: {signaling}</div>
-        <div>ICE: {ice}</div>
+        <div>Status: {connectionState}</div>
+        <div>Signaling: {signalingState}</div>
+        <div>ICE: {iceConnectionState}</div>
       </div>  
       <div className='fixed w-full h-full flex items-center justify-center'>
         <img src={friends[friendID].profilePicture} alt='' className='rounded-full'/>

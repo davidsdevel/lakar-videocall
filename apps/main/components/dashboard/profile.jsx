@@ -1,5 +1,4 @@
 import {FaPowerOff} from 'react-icons/fa';
-import {useState} from 'react';
 import {signOut} from 'next-auth/react';
 
 export default function Profile({username, profilePicture}) {

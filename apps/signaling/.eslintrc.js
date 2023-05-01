@@ -19,6 +19,8 @@ module.exports = {
     curly: 'off',
     'no-buffer-constructor': 'error',
     'no-var': 'error',
-    'no-console': 'warn'
+    'no-console': 'warn',
+    'no-unused-vars': 'error',
+    'no-unused-expressions': 'error'
   }
 };

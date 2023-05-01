@@ -9,7 +9,6 @@ import Loading from '@/components/loading';
 function Container() {
   const [tab, setTab] = useState('');
   const [friendID, setFriendID] = useState('');
-  const [callID, setCallID] = useState('');
   const [messageChannel, setMessageChannel] = useState('');
   const [isCaller, setIsCaller] = useState(false);
   const {loading, user, friends} = useUser();

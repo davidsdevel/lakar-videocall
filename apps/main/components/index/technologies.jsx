@@ -3,7 +3,7 @@ import {SiTailwindcss, SiNextdotjs, SiSocketdotio, SiVercel, SiMongodb, SiGlitch
 
 export default function Technologies() {
   return <div className='w-full text-center mb-12'>
-    <h4 className='text-xl font-bold text-gray-600 my-8'>Creado con</h4>
+    <h4 className='text-4xl font-extrabold my-8 text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-main-500'>Creado con</h4>
     <ul className='flex justify-around items-center flex-wrap'>
       <li className='mx-2 my-4'>
         <FaReact className='w-20 h-20 text-gray-400'/>

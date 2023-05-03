@@ -6,7 +6,9 @@ export const config = {
     '/',
     '/login',
     '/signin',
-    '/_dashboard'
+    '/_dashboard',
+    '/messages/:path+',
+    '/contacts/:path+'
   ],
 };
 
@@ -20,8 +22,8 @@ export default function middleware(req) {
       url.pathname = '/';
 
       return NextResponse.redirect(url);
-    } else if (url.pathname === '/') {
-      url.pathname = '/_dashboard';
+    } else {
+      url.pathname = `/_dashboard${url.pathname}`;
 
       return NextResponse.rewrite(url);
     }

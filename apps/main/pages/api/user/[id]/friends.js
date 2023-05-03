@@ -2,6 +2,9 @@ import connect from '@/lib/mongo/connect';
 import users from '@/lib/mongo/models/users';
 
 export default async function UserFriends(req, res) {
+  if (req.method !== 'POST')
+    return res.status(405);
+
   await connect();
 
   const {id} = req.query;

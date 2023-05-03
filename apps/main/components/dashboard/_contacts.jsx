@@ -45,7 +45,6 @@ export default function Contacts({friends, onAction, onAddFriend}) {
             </button>
           </div>
         </li>;
-
       })
     }
     </ul>

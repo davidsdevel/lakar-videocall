@@ -36,10 +36,9 @@ export default function Signup() {
   return <div className='flex absolute w-full h-full'>
     <div className='h-full bg-white flex flex-col items-center justify-center px-24'>
       <div className='mb-8 text-center'>
-        <span className='text-2xl text-gray-600'>Create a new account</span>
+        <span className='text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-main-500'>Create a new account</span>
       </div>
       <form onSubmit={e => signup(e, {username, email, password})} className='flex flex-col items-center'>
-
         <Input
           placeholder='Username'
           type='text'
@@ -59,7 +58,7 @@ export default function Signup() {
           value={password}
         />
         <Button className='bg-main-500 w-full text-white'>Sign up</Button>
-        <span className='text-sm'>Already have an account? <Link href='/login'><a className='text-main-500'>Log In</a></Link></span>
+        <span className='text-sm'>Already have an account? <Link href='/login' className='text-main-500'>Log In</Link></span>
       </form>
     </div>
     <div className='flex-grow flex items-center justify-center bg-center bg-cover' style={{backgroundImage: 'url(/images/lakar-login.webp)'}}/>

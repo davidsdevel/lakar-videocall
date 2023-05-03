@@ -3,7 +3,8 @@ import mongoose from 'mongoose';
 const messageSchema = new mongoose.Schema({
   user: {
     required: true,
-    type: mongoose.Types.ObjectId
+    type: mongoose.Types.ObjectId,
+    ref: 'User'
   },
   channel: {
     required: true,

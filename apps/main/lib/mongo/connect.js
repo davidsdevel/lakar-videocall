@@ -6,9 +6,7 @@ let cache = null;
 
 const mongooseOptions = {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
+  useUnifiedTopology: true
 };
 
 export default function Connect() {

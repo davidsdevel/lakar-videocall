@@ -1,8 +1,8 @@
 import {DashboardProvider} from '@/components/dashboard/context';
-import Chat from '@/components/dashboard/chat';
+import Contacts from '@/components/dashboard/contacts/index';
 
-export default function Message() {
+export default function Dashboard() {
   return <DashboardProvider>
-    <Chat/>
+    <Contacts/>
   </DashboardProvider>;
 }

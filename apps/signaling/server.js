@@ -11,13 +11,11 @@ const port = parseInt(process.env.PORT, 10) || 8082;
 const isDev = process.env.NODE_ENV !== 'production';
 const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost/lakar';
 
-const corsOrigin = isDev ? 'http://localhost:8081' : 'https://lakar-video.vercel.app';
+const corsOrigin = isDev ? 'http://192.168.100.41:8081' : 'https://lakar-video.vercel.app';
 
 const mongooseOptions = {
   useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useFindAndModify: false,
-  useCreateIndex: true
+  useUnifiedTopology: true
 };
 
 const app = express();

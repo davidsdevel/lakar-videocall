@@ -180,7 +180,7 @@ export default function Call({onEndCall, friendID, isCaller}) {
   };
 
   useEffect(() => {
-    navigator.getUserMedia(userContraints,
+    navigator.mediaDevices.getUserMedia(userContraints,
       localStream => {
         const remoteStream = new MediaStream();
 
@@ -224,7 +224,7 @@ export default function Call({onEndCall, friendID, isCaller}) {
   }, [socket, endCall, friendID, user._id, isCaller]);
 
   return <div className='fixed w-full h-full top-0 flex flex-col items-center'>
-    <div id='main-screen' className='w-full h-full bg-gray-800 grow flex items-center justify-center relative'>
+    <div id='main-screen' className='w-full h-full bg-slate-800 grow flex items-center justify-center relative'>
       <div className='fixed top-4 left-4 bg-[#0003] p-4 rounded-lg text-white fot-bold z-30'>
         <div>Status: {connectionState}</div>
         <div>Signaling: {signalingState}</div>
@@ -236,29 +236,29 @@ export default function Call({onEndCall, friendID, isCaller}) {
       <video ref={receiverRef} className='z-10 w-full h-full max-w-full max-h-full' autoPlay/>
       <video ref={senderRef} autoPlay muted className='absolute top-4 right-4 w-24 md:w-40'/>
     </div>
-    <div className='absolute z-20 bg-[#fff5] py-2 px-4 justify-between flex items-center rounded-full w-80 bottom-12'>
-      <button className='flex items-center justify-center p-4 bg-red-300 rounded-full h-fit' onClick={flipCamera}>
-        <FaSync/>
+    <div className='absolute z-20 bg-[#fff2] justify-between flex items-center rounded-full bottom-4'>
+      <button className='flex m-2 items-center justify-center p-5 bg-main-700 rounded-full h-fit' onClick={flipCamera}>
+        <FaSync className='text-white'/>
       </button>
-      <button className='flex items-center justify-center p-4 bg-red-300 rounded-full h-fit'>
+      <button className='flex m-2 items-center justify-center p-5 bg-main-700 rounded-full h-fit'>
         {
           hasVideo
-           ? <FaVideoSlash/>
-           : <FaVideo/>
+           ? <FaVideoSlash className='text-white'/>
+           : <FaVideo className='text-white'/>
         }
       </button>
-      <button className='flex items-center justify-center p-4 bg-red-300 rounded-full h-fit' onClick={toggleMicro}>
+      <button className='flex m-2 items-center justify-center p-5 bg-main-700 rounded-full h-fit' onClick={toggleMicro}>
         {
           isMuted
-            ? <FaMicrophone/>
-            : <FaMicrophoneSlash/>
+            ? <FaMicrophone className='text-white'/>
+            : <FaMicrophoneSlash className='text-white'/>
         }
       </button>
-      <button className='flex items-center justify-center p-6 bg-red-500 rounded-full' onClick={() => {
+      <button className='flex m-2 items-center justify-center p-5 bg-red-500 rounded-full' onClick={() => {
         socket.emit('end-call', {from: user._id, to: friendID});
         endCall();
       }}>
-        <FaPhoneSlash style={{height: 24, width: 24}}/>
+        <FaPhoneSlash className='text-white'/>
       </button>
     </div>
   </div>;  

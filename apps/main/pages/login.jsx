@@ -29,28 +29,30 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  return <div className='flex absolute w-full h-full'>
-    <div className='h-full bg-white flex flex-col items-center justify-center px-24'>
-      <div className='mb-8 text-center'>
-        <span className='text-2xl text-gray-600'>Log in to your account</span>
+  return <div className='flex absolute w-full h-screen'>
+    <div className='h-full w-full flex flex-col items-center justify-center px-24 bg-gradient-to-br from-green-400 to-main-500'>
+      <div className='text-center mb-8'>
+        <span className='text-2xl font-bold text-white'>Log in to your account</span>
       </div>
-      <form onSubmit={e => login(e, email, password)} className='flex flex-col items-center'>
-        <Input
-          placeholder='Email'
-          type='text'
-          onChange={({target: {value}}) => setEmail(value)}
-          value={email}
-        />
-        <Input
-          placeholder='Password'
-          type='password'
-          onChange={({target: {value}}) => setPassword(value)}
-          value={password}
-        />
-        <Button className='bg-main-500 w-full text-white'>Login</Button>
-        <span className='text-sm'>Don&apos;t have an account? <Link href='/signup'><a className='text-main-500'>Sign up</a></Link></span>
-      </form>
+      <div className='bg-white px-4 py-8 rounded-xl'>
+        <form onSubmit={e => login(e, email, password)} className='flex flex-col items-center'>
+          <Input
+            placeholder='Email'
+            type='text'
+            onChange={({target: {value}}) => setEmail(value)}
+            value={email}
+          />
+          <Input
+            placeholder='Password'
+            type='password'
+            onChange={({target: {value}}) => setPassword(value)}
+            value={password}
+          />
+          <Button className='bg-main-500 w-full text-white'>Login</Button>
+          <span className='text-sm'>Don&apos;t have an account? <Link href='/signup' className='text-main-500'>Sign up</Link></span>
+        </form>
+      </div>
     </div>
-    <div className='flex-grow flex items-center justify-center bg-center bg-cover' style={{backgroundImage: 'url(/images/lakar-login.webp)'}}/>
+    {/*<div className='flex-grow flex items-center justify-center bg-center bg-cover' style={{backgroundImage: 'url(/images/lakar-login.webp)'}}/>*/}
   </div>;
 }

@@ -27,7 +27,7 @@ export default function Messages() {
       {
         isLoading
           ? <MessageLoader/>
-          : messages.map(e => <MessageTemplate key={_id} {...e}/>)
+          : messages.map(e => <MessageTemplate key={e._id} {...e}/>)
       }  
     </div>
   </div>;

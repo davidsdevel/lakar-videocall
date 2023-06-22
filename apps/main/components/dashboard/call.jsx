@@ -108,6 +108,7 @@ const joinCall = async (socket, pc, callID) => {
 
 export default function Call({onEndCall, friendID, isCaller}) {
   const receiverRef = useRef(null);
+  const callIdRef = useRef(null);
   const senderRef = useRef(null);
   const pcRef = useRef(null);
 
@@ -205,6 +206,8 @@ export default function Call({onEndCall, friendID, isCaller}) {
 
         //Get CallID
         socket.emit('get-call-id', {from: user._id, to: friendID}, _callID => {
+          callIdRef.current = _callID;
+
           if (isCaller) {
             startCall(socket, pc, localStream, _callID, user._id);
           } else {
@@ -214,11 +217,13 @@ export default function Call({onEndCall, friendID, isCaller}) {
       })
       .catch(() => alert('You need approve camera access'));
 
-
     return () => {
       pcRef.current = null;
       senderRef.current = null;
+      callIdRef.current = null;
       receiverRef.current = null;
+
+      socket.off('end-call', endCall);
     };
   }, [socket, endCall, friendID, user._id, isCaller]);
 
@@ -254,7 +259,7 @@ export default function Call({onEndCall, friendID, isCaller}) {
         }
       </button>
       <button className='flex m-2 items-center justify-center p-5 bg-red-500 rounded-full' onClick={() => {
-        socket.emit('end-call', {from: user._id, to: friendID});
+        socket.emit('end-call', {callID: callIdRef.current});
         endCall();
       }}>
         <FaPhoneSlash className='text-white'/>

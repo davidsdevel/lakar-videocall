@@ -18,7 +18,7 @@ export default function Messages() {
   const sorted = useMemo(() => {
     if (user)
       return user.friends.sort((a, b) => a.username.localeCompare(b.username, 'en', {sensitivity: 'base'}));
-  }, [user]);
+  }, [user, user?.friends]);
 
   return <div>
     <div className='px-4 py-2'>
@@ -36,7 +36,7 @@ export default function Messages() {
       <div className='z-10 rounded-2xl bg-slate-100 px-4 py-8 flex flex-col'>
         <Input type='text' placeholder='Friend ID' value={friendID} onChange={({target: {value}}) => setFriendID(value)}/>
         <Button onClick={async () => {
-          const friend = await user.addFriend(friendID);
+          await user.addFriend(friendID);
 
           socket.emit('new-friend', {
             from: user._id,

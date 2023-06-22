@@ -180,8 +180,8 @@ export default function Call({onEndCall, friendID, isCaller}) {
   };
 
   useEffect(() => {
-    navigator.mediaDevices.getUserMedia(userContraints,
-      localStream => {
+    navigator.mediaDevices.getUserMedia(userContraints)
+      .then(localStream => {
         const remoteStream = new MediaStream();
 
         remoteStreamRef.current = remoteStream;
@@ -208,12 +208,11 @@ export default function Call({onEndCall, friendID, isCaller}) {
           if (isCaller) {
             startCall(socket, pc, localStream, _callID, user._id);
           } else {
-            joinCall(socket, pc, callID);
+            joinCall(socket, pc, _callID);
           }
         });
-      },
-      () => alert('You need approve camera access')
-    );
+      })
+      .catch(() => alert('You need approve camera access'));
 
 
     return () => {

@@ -18,7 +18,7 @@ export default function Messages() {
   const sorted = useMemo(() => {
     if (user)
       return user.friends.sort((a, b) => a.username.localeCompare(b.username, 'en', {sensitivity: 'base'}));
-  }, [user]);
+  }, [user, user.friends]);
 
   return <div>
     <div className='px-4 py-2'>
@@ -43,7 +43,6 @@ export default function Messages() {
             to: friendID
           });
 
-          onAddFriend(friend);
           setFriendID('');
           setShow(false);
         }}>Add Contact</Button>

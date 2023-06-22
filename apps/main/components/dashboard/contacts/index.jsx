@@ -15,7 +15,6 @@ export default function Messages() {
   const {loading, user} = useUser();
   const socket = useSocket();
 
-
   const sorted = useMemo(() => {
     if (user)
       return user.friends.sort((a, b) => a.username.localeCompare(b.username, 'en', {sensitivity: 'base'}));
@@ -49,7 +48,7 @@ export default function Messages() {
           setShow(false);
         }}>Add Contact</Button>
         <hr className='my-4'/>
-        <Input type='text' disabled value={user._id}/>
+        <Input type='text' disabled value={loading ? '' : user._id}/>
         <Button onClick={() => {
           navigator.clipboard.writeText(user._id);
 

@@ -28,7 +28,7 @@ export default function Messages() {
           : sorted.map(e => <ContactTemplate key={'contact-' + e._id} {...e}/>)
       }  
     </div>
-    <button className='bg-gradient-to-br from-green-400 to-main-500 fixed bottom-4 right-4 rounded-full p-2'>
+    <button className='bg-gradient-to-br from-green-400 to-main-500 fixed bottom-4 right-4 rounded-full p-2' onClick={() => setShow(true)}>
       <BsPlus className='text-white h-8 w-8'/>
     </button>
 

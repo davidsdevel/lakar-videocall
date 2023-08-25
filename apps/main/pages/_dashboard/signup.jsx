@@ -7,7 +7,7 @@ import {authOptions} from '@/pages/api/auth/[...nextauth]';
 export async function getServerSideProps({req, res}) {
   const {user} = await getServerSession(req, res, authOptions);
 
-  const fetchResponse = await fetch(`${process.env.VERCEL_URL}/api/user/${user.id}/has-password`);
+  const fetchResponse = await fetch(`https://${process.env.VERCEL_URL}/api/user/${user.id}/has-password`);
 
   const {hasPassword} = await fetchResponse.json();
 

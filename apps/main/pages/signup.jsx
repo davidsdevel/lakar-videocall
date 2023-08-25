@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import {signIn} from 'next-auth/react';
 import Router from 'next/router';
 import Input from '@/components/input';
 import Button from '@/components/button';
@@ -26,6 +27,12 @@ async function signup(e, data) {
 
     throw err;
   }
+}
+
+async function signupWithGoogle() {
+  const res  = await signIn('google');
+
+  console.log(res);
 }
 
 export default function Signup() {
@@ -58,9 +65,16 @@ export default function Signup() {
           value={password}
         />
         <Button className='bg-main-500 w-full text-white'>Sign up</Button>
-        <span className='text-sm'>Already have an account? <Link href='/login' className='text-main-500'>Log In</Link></span>
       </form>
+
+      <div className='flex items-center mx-auto w-fit'>
+        <hr className='w-16'/>
+        <span>O</span>
+        <hr className='w-16'/>
+      </div>
+      <Button className='my-4' onClick={signupWithGoogle}>Sign Up with Google</Button>
+      <span className='text-sm'>Already have an account? <Link href='/login' className='text-main-500'>Log In</Link></span>
     </div>
-    <div className='flex-grow flex items-center justify-center bg-center bg-cover' style={{backgroundImage: 'url(/images/lakar-login.webp)'}}/>
+    <div className='flex-grow flex items-center justify-center bg-center bg-cover' style={{backgroundImage: 'url(https://freesvg.org/img/tealbluebackground.png)'}}/>
   </div>;
 }

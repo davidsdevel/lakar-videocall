@@ -48,12 +48,10 @@ export default function Messages() {
 
   useEffect(() => {
     if (query.id && user) {
-      fetch(`/api/message/${query.id}`)
+      fetch(`/api/message/${user._id}?friend=${query.id}`)
         .then(e => e.json())
         .then(({data}) => {
-          const parsedFrienID = query.id.replace(user._id, '').replace('_', '');
-
-          const [actualFriend] = user.friends.filter(e => e._id === parsedFrienID);
+          const [actualFriend] = user.friends.filter(e => e._id === query.id);
 
           setMessages(data);
           setFriend(actualFriend);

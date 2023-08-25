@@ -1,8 +1,10 @@
+import {useRouter} from 'next/navigation';
 import {CiPhone, CiChat2} from 'react-icons/ci';
 import {useUser} from '@/components/dashboard/context';
 
 export default function Template({_id, username, profilePicture, online}) {
   const {doCall} = useUser();
+  const router = useRouter();
 
   return <div className='flex w-full py-2 items-center'>
     <div className='relative'>
@@ -12,7 +14,7 @@ export default function Template({_id, username, profilePicture, online}) {
     <div className='flex flex-col text-white pl-2 flex-grow'>
       <span className='font-bold text-lg'>{username}</span>
     </div>
-    <button className='mr-2'>
+    <button className='mr-2' onClick={() => router.push(`/messages/${_id}`)}>
       <CiChat2 className='text-slate-200 h-8 w-8'/>
     </button>
     <button onClick={() => doCall(_id, online)}>

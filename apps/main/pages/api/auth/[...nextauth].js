@@ -1,7 +1,9 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import GoogleProvider from 'next-auth/providers/google';
 import connect from '@/lib/mongo/connect';
 import users from '@/lib/mongo/models/users';
+import crypto from 'crypto';
 
 const isDev = process.env.NODE_ENV !== 'production';
 
@@ -28,9 +30,35 @@ export const authOptions = {
     strategy: 'jwt'
   },
   callbacks: {
-    async jwt({token, user}) {
-      //console.log(token, user)
+    async signIn({user, account, profile}) {
+      if (account.provider === 'google') {
+        await connect();
+        
+        const {email, picture} = profile;
+        const userAccount = await users.findOne({
+          email
+        }, '-password', {lean: true});
 
+        if (!userAccount) {
+          const [username] = email.split('@');
+
+          const createUserResponse = await users.create({
+            username: username + crypto.randomBytes(2).toString('hex'),
+            profilePicture: picture,
+            email,
+            password: 'none'
+          });
+
+          user.id = createUserResponse._id.toString();
+        } else {
+
+          user.id = userAccount._id.toString()
+        }
+      }
+
+      return true;
+    },
+    async jwt({token, user}) {
       if (token.user)
         return token;
 
@@ -41,11 +69,21 @@ export const authOptions = {
     async session({session, token}) {
       session.user = token.user;
 
-      //console.log(session, token);
       return session;
     }
   },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: {
+        params: {
+          prompt: 'consent',
+          access_type: "offline",
+          response_type: "code"
+        }
+      }
+    }),
     CredentialsProvider({
       name: 'Credentials',
       credentials: {

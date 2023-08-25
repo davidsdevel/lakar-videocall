@@ -20,8 +20,8 @@ export default function Messages() {
       return user.friends.sort((a, b) => a.username.localeCompare(b.username, 'en', {sensitivity: 'base'}));
   }, [user, user?.friends]);
 
-  return <div>
-    <div className='px-4 py-2'>
+  return <div className='md:grow'>
+    <div className='px-4 py-2 md:flex md:flex-col md:w-full md:w-full md:max-w-2xl md:m-auto'>
       {
         loading
           ? <ContactLoader/>

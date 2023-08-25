@@ -195,7 +195,7 @@ export function DashboardProvider({children}) {
   };
 
   return <Context.Provider value={value}>
-    <div className='h-screen bg-slate-800'>
+    <div className='h-screen bg-slate-800 md:flex'>
       <MenuBar/>
       {children}
     </div>

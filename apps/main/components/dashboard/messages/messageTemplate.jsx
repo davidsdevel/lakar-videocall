@@ -4,7 +4,7 @@ import {useRouter} from 'next/navigation';
 export default function Template({user, lastMessage, time, channel}) {
   const router = useRouter();
 
-  return <div className='flex w-full py-2 items-center' onClick={() => router.push(`/messages/${channel}`)}>
+  return <div className='flex w-full py-2 items-center' onClick={() => router.push(`/messages/${user._id}`)}>
     <img className='rounded-full h-16 w-16' src={user.profilePicture} alt=''/>
     <div className='flex flex-col justify-between text-white pl-2 flex-grow h-16'>
       <div className='flex justify-between'>

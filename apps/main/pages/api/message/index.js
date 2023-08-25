@@ -11,6 +11,8 @@ export default async function Messages(req, res) {
 
   const {friends} = await users.findById(id, 'friends', {lean: true, populate: 'friends'});
 
+  console.log(await messages.find({}, null, {lean: true}));
+
   const promises = friends.map(e => {
     return Promise.all([
       messages.findOne({
@@ -31,6 +33,8 @@ export default async function Messages(req, res) {
 
   const promisesResponse = await Promise.all(promises);
 
+  console.log(promisesResponse)
+
   const filteredMessages = promisesResponse.filter(([message]) => message);
 
   filteredMessages.forEach(([message, user]) => {
@@ -40,7 +44,8 @@ export default async function Messages(req, res) {
       user: {
         online: user.online,
         username: user.username,
-        profilePicture: user.profilePicture
+        profilePicture: user.profilePicture,
+        _id: e._id
       },
       lastMessage: message.content,
       time: message.time

@@ -13,9 +13,11 @@ export default async function HasPassword(req, res) {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await users.updateOne({_id: id}, {
+  await users.updateOne({_id: id}, {
     password: hashedPassword
   });
 
-  res.json({});
+  res.json({
+    status: 'OK'
+  });
 }

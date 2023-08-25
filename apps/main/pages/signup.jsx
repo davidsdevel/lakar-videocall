@@ -30,9 +30,7 @@ async function signup(e, data) {
 }
 
 async function signupWithGoogle() {
-  const res  = await signIn('google');
-
-  console.log(res);
+  await signIn('google');
 }
 
 export default function Signup() {

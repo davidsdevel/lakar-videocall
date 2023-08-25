@@ -23,7 +23,7 @@ export default function Contacts() {
   return<div className='w-full flex overflow-x-auto px-2 h-32 items-center'>
   {
     activeContacts.map(({_id, profilePicture, username}) => {
-      return <div key={'contact-' + _id} className='flex flex-col items-center w-16 mx-1 shrink-0' onClick={() => useRouter(`/messages/${_id}`)}>
+      return <div key={'contact-' + _id} className='flex flex-col items-center w-16 mx-1 shrink-0' onClick={() => router.push(`/messages/${_id}`)}>
         <div className='relative'>
           <img className='w-16 h-16 rounded-full' src={profilePicture} alt=''/>
           <div className='absolute bg-green-500 z-10 bottom-0 right-0 w-4 h-4 rounded-full border border-2 border-slate-800'/>

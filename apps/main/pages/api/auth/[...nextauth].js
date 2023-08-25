@@ -52,7 +52,7 @@ export const authOptions = {
           user.id = createUserResponse._id.toString();
         } else {
 
-          user.id = userAccount._id.toString()
+          user.id = userAccount._id.toString();
         }
       }
 
@@ -79,8 +79,8 @@ export const authOptions = {
       authorization: {
         params: {
           prompt: 'consent',
-          access_type: "offline",
-          response_type: "code"
+          access_type: 'offline',
+          response_type: 'code'
         }
       }
     }),

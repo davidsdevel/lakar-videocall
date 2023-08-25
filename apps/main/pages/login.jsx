@@ -57,7 +57,7 @@ export default function Login() {
             <span>Or</span>
             <hr className='w-16'/>
           </div>
-          <Button className='my-2'>Login with Google</Button>
+          <Button className='my-2' onClick={loginGoogle}>Login with Google</Button>
         </div>
         <span className='text-sm'>Don&apos;t have an account? <Link href='/signup' className='text-main-500'>Sign up</Link></span>
       </div>

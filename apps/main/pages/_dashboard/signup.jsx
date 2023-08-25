@@ -1,5 +1,4 @@
-import {useState, useEffect} from 'react';
-import Link from 'next/link';
+import {useState} from 'react';
 import Input from '@/components/input';
 import Button from '@/components/button';
 import {getServerSession} from 'next-auth/next';
@@ -18,11 +17,11 @@ export async function getServerSideProps({req, res}) {
         permanent: false,
         destination: '/'
       }
-    }
+    };
   
   return {
     props: user
-  }
+  };
 }
 
 export default function Login({id, email}) {
@@ -47,7 +46,7 @@ export default function Login({id, email}) {
 
     if (response.ok)
       window.location = '/';
-  }
+  };
 
   return <div className='flex absolute w-full h-screen'>
     <div className='h-full w-full flex flex-col items-center justify-center px-24 bg-gradient-to-br from-green-400 to-main-500'>

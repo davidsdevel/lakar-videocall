@@ -1,7 +1,7 @@
 import moment from 'moment';
 import {useRouter} from 'next/navigation';
 
-export default function Template({user, lastMessage, time, channel}) {
+export default function Template({user, lastMessage, time}) {
   const router = useRouter();
 
   return <div className='flex w-full py-2 items-center' onClick={() => router.push(`/messages/${user._id}`)}>

@@ -188,8 +188,11 @@ export default function Call({onEndCall, friendID, isCaller}) {
         remoteStreamRef.current = remoteStream;
         localStreamRef.current = localStream;
 
-        receiverRef.current.srcObject = remoteStream;
-        senderRef.current.srcObject = localStream;
+        if (receiverRef.current)
+          receiverRef.current.srcObject = remoteStream;
+        
+        if (senderRef.current)
+          senderRef.current.srcObject = localStream;
 
         const pc = new RTCPeerConnection(RTCconfiguration);
 
@@ -215,7 +218,10 @@ export default function Call({onEndCall, friendID, isCaller}) {
           }
         });
       })
-      .catch(() => alert('You need approve camera access'));
+      .catch((err) => {
+        alert('You need approve camera access');
+        throw err;
+      });
 
     return () => {
       pcRef.current = null;

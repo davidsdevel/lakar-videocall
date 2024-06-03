@@ -136,7 +136,7 @@ export default function Messages() {
           if (message === '')
             return;
 
-          socket.emit('send-message', {message, from: user._id, to: friendID});
+          socket.emit('send-message', {message, from: user._id, to: friend._id});
 
           setMessages(prev => {
             return prev.concat([

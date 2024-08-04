@@ -17,7 +17,7 @@ export default async function Signup(req, res) {
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (passwordMatch) {
-        delete user.password
+        delete user.password;
         
         res.json({
             user

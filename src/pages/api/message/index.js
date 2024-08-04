@@ -11,8 +11,6 @@ export default async function Messages(req, res) {
 
   const {friends} = await users.findById(id, 'friends', {lean: true, populate: 'friends'});
 
-  console.log(friends)
-
   const promises = friends.map(e => {
     return Promise.all([
       messages.findOne({

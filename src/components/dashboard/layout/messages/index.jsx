@@ -3,7 +3,7 @@ import {useState, useEffect} from 'react';
 import MessageTemplate from './messageTemplate';
 import MessageLoader from './messageLoader';
 import Contacts from './contacts';
-import Chat from './chat'
+import Chat from './chat';
 import Top from '../top';
 
 

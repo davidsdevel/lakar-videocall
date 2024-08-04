@@ -108,8 +108,6 @@ export const authOptions = {
 
           const {user} = await res.json();
 
-          console.log(user)
-
           if (!user)
             return null;
 
@@ -117,7 +115,6 @@ export const authOptions = {
             id: user._id.toString()
           };
         } catch(err) {
-          console.error(err)
           throw err;
         }
       }

@@ -1,6 +1,5 @@
 import {useState, useEffect, useRef} from 'react';
 import {useUser, useSocket} from '@/components/dashboard/context';
-import {useRouter} from 'next/router';
 import {FaChevronLeft} from 'react-icons/fa';
 import {CiPaperplane, CiPhone} from 'react-icons/ci';
 
@@ -37,7 +36,6 @@ export default function Messages({friendId, onClose}) {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const router = useRouter();
   const {user, doCall} = useUser();
   const socket = useSocket();
 
@@ -47,7 +45,6 @@ export default function Messages({friendId, onClose}) {
 
   useEffect(() => {
     if (friendId && user) {
-        console.log(friendId)
       fetch(`/api/message/${user._id}?friend=${friendId}`)
         .then(e => e.json())
         .then(({data}) => {
@@ -104,7 +101,7 @@ export default function Messages({friendId, onClose}) {
         <button
             className='mx-2'
             onClick={() => {
-                doCall(friendId, online)
+                doCall(friendId, online);
                 setTimeout(() => onClose(), 0);
             }}
         >

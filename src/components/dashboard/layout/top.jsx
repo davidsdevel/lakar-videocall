@@ -1,4 +1,4 @@
-export default function Profile({username, profilePicture}) {
+export default function Profile({profilePicture}) {
     return <div className='
         w-full
         bg-[#0004]

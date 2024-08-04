@@ -1,0 +1,66 @@
+name: "Deploy"
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: "Deploy"
+    environment:
+      name: Production
+      url: https://lakar.davidsdevel.site
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'yarn'
+
+    - run: yarn
+    
+    - name: Restore build cache
+      id: restore-build-cache
+      uses: actions/cache/restore@v4
+      with:
+        path: |
+          .next/cache
+        key: ${{ runner.os }}-build-lakar
+
+    - run: yarn build
+
+    - name: Save Build Cache
+      id: save-build-cache
+      uses: actions/cache/save@v4
+      with:
+        path: |
+          .next/cache
+        key: ${{ steps.restore-build-cache.outputs.cache-primary-key }}
+
+    - name: Install SSH key
+      uses: shimataro/ssh-key-action@v2
+      with:
+        key: ${{ secrets.DEPLOYMENT_KEY }}
+        known_hosts: random
+
+    - run: ssh-keyscan -H ${{ secrets.DEPLOYMENT_IP }} >> ~/.ssh/known_hosts
+    - run: rm -rf src
+    - run: rm -rf .next/cache
+    - run: rm -rf .github
+    - run: rm -rf .gitignore
+    - run: rm -rf .idx
+    - run: rm -rf node_modules
+    - run: rm README.md
+    - run: cat package.json | jq '.scripts.build = "echo Done"' > package2.json
+    - run: mv package2.json package.json
+    - run: git config --global user.email "you@example.com"
+    - run: git config --global user.name "Your Name"
+    - run: git remote add dokku dokku@${{ secrets.DEPLOYMENT_IP }}:lakar
+    - run: git add .
+    - run: git commit -m "Deploy"
+    - run: git push -f dokku main

@@ -5,7 +5,7 @@ import MessageLoader from './messageLoader';
 import Contacts from './contacts';
 import Chat from './chat';
 import Top from '../top';
-
+import Image from 'next/image';
 
 export default function Messages() {
   const [messages, setMessages] = useState([]);
@@ -41,7 +41,9 @@ export default function Messages() {
       {
         !id
           ? <div className='hidden flex-grow md:flex md:items-center md:justify-center'>
-              <span>Chat...</span>
+              <div className='bg-white flex items-center justify-center w-96 h-96 rounded-full'>
+                <Image src='/images/lakar-chat.svg' width={280} height={280} alt=''/>
+              </div>
             </div>
           : <Chat friendId={id} onClose={() => setId('')}/>
       }

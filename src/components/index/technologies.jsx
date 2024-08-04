@@ -1,5 +1,5 @@
 import {FaReact} from 'react-icons/fa';
-import {SiTailwindcss, SiNextdotjs, SiSocketdotio, SiVercel, SiMongodb, SiGlitch} from 'react-icons/si';
+import {SiTailwindcss, SiNextdotjs, SiSocketdotio, SiMongodb} from 'react-icons/si';
 
 export default function Technologies() {
   return <div className='w-full text-center mb-12 flex flex-col items-center'>
@@ -19,12 +19,6 @@ export default function Technologies() {
       </li>
       <li className='mx-2 my-4'>
         <SiMongodb className='w-20 h-20 text-gray-400'/>
-      </li>
-      <li className='mx-2 my-4'>
-        <SiVercel className='w-20 h-20 text-gray-400'/>
-      </li>
-      <li className='mx-2 my-4'>
-        <SiGlitch className='w-20 h-20 text-gray-400'/>
       </li>
     </ul>
   </div>;

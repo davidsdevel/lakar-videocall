@@ -1,23 +1,25 @@
-import connect from '@/lib/mongo/connect';
-import users from '@/lib/mongo/models/users';
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
+import connect from "@/lib/mongo/connect";
+import users from "@/lib/mongo/models/users";
 
 export default async function HasPassword(req, res) {
-  if (req.method !== 'POST')
-    return res.status(405);
+	if (req.method !== "POST") return res.status(405);
 
-  await connect();
+	await connect();
 
-  const {id} = req.query;
-  const {password} = req.body;
+	const { id } = req.query;
+	const { password } = req.body;
 
-  const hashedPassword = await bcrypt.hash(password, 10);
+	const hashedPassword = await bcrypt.hash(password, 10);
 
-  await users.updateOne({_id: id}, {
-    password: hashedPassword
-  });
+	await users.updateOne(
+		{ _id: id },
+		{
+			password: hashedPassword,
+		},
+	);
 
-  res.json({
-    status: 'OK'
-  });
+	res.json({
+		status: "OK",
+	});
 }

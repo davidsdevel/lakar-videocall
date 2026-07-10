@@ -1,0 +1,9 @@
+node_modules
+.next/cache
+.git
+.gitignore
+.env
+.env.*
+README.md
+.github
+.idx

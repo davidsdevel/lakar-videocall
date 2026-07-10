@@ -1,8 +1,7 @@
-const isDev = process.env.NODE_ENV !== 'production';
+const isDev = process.env.NODE_ENV !== "production";
 
-if (isDev)
-  require('dotenv').config();
+if (isDev) require("dotenv").config();
 
-const {init} = require('./server');
+const { init } = require("./server");
 
 init();

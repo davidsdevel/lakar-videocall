@@ -52,9 +52,9 @@ jobs:
         with:
           context: .
           push: true
-          tags: davidsdevel/lakar:latest
-          cache-from: type=registry,ref=davidsdevel/lakar:buildcache
-          cache-to: type=registry,ref=davidsdevel/lakar:buildcache,mode=max
+          tags: davidsdevel/lakar:latest          
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Ejecutar comandos remotos por SSH
         uses: appleboy/ssh-action@v1

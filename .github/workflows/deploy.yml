@@ -18,9 +18,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: "yarn"
+          cache: "npm"
 
-      - run: yarn
+      - run: npm ci
 
       - name: Restore build cache
         id: restore-build-cache
@@ -29,7 +29,7 @@ jobs:
           path: .next/cache
           key: ${{ runner.os }}-build-lakar
 
-      - run: yarn build
+      - run: npm run build
 
       - name: Save Build Cache
         id: save-build-cache
@@ -51,15 +51,13 @@ jobs:
           push: true
           tags: davidsdevel/lakar:latest
 
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
+      - name: Ejecutar comandos remotos por SSH
+        uses: appleboy/ssh-action@v1
         with:
+          host: ${{ secrets.DEPLOYMENT_IP }}
+          username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.DEPLOYMENT_KEY }}
-          known_hosts: random
-
-      - run: ssh-keyscan -H ${{ secrets.DEPLOYMENT_IP }} >> ~/.ssh/known_hosts
-
-      - name: Deploy via SSH
-        run: |
-          ssh root@${{ secrets.DEPLOYMENT_IP }} \
-            "cd ~/lakar && docker compose pull && docker compose up -d"
+          script: |
+            cd ~/peer
+            docker compose pull lakar
+            docker compose up -d

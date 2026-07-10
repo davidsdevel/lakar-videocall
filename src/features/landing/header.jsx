@@ -23,14 +23,14 @@ export default function Header() {
 			<div className="w-full bg-gradient-to-br from-green-400 to-main-500 py-8 px-4 md:p-20">
 				<div className="w-full m-auto flex flex-col items-center md:max-w-6xl md:flex-row">
 					<div className="text-center md:w-1/2 my-32">
-						<h1 className="text-2xl my-4 font-extrabold text-white md:text-4xl">
+						<h1 className="text-2xl my-4 font-extrabold text-white md:text-4xl lg:text-5xl">
 							Mantente siempre conectado con <span>Lakar Streaming</span>
 						</h1>
-						<h2 className="text-sm text-white">
+						<h2 className="text-sm text-white md:text-xl">
 							Mensajes, llamadas y más. Todo en un mismo lugar
 						</h2>
 						<Button
-							className="my-8"
+							className="my-8 w-32"
 							transparent
 							onClick={() => router.push("/signup")}
 						>

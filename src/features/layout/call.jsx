@@ -135,13 +135,13 @@ export default function Call({ onEndCall, friendID, isCaller, waitingAccept }) {
 
 		const newFacingMode = isFrontalCamera ? "environment" : "user";
 
-		alert(videoTrack.getSettings().facingMode)
+		alert(videoTrack.getSettings().facingMode);
 
 		try {
 			await videoTrack.applyConstraints({ facingMode: newFacingMode });
 			setIsFrontalCamera(!isFrontalCamera);
-		} catch(err) {
-			console.error(err)
+		} catch (err) {
+			console.error(err);
 			// Si falla, no cambiamos el estado
 		}
 	};

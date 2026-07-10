@@ -1,6 +1,6 @@
 export default function Button({ className, transparent, children, ...props }) {
 	const customClassName = transparent
-		? "bg-none border border-white"
+		? "bg-none border border-white hover:bg-white hover:text-main-500 text-white transition-colors duration-300"
 		: "bg-gradient-to-r from-green-400 to-main-500";
 
 	return (

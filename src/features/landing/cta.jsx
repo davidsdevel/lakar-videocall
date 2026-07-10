@@ -13,17 +13,21 @@ export default function CTA() {
 				Mantente siempre conectado
 			</p>
 			<img src="/images/lakar-cta.svg" className="max-w-xs w-full" alt="" />
-			<div className="my-8 flex items-center relative items-stretch">
-				<Button className="my-0 mx-1" onClick={() => router.push("/signup")}>
+			<div className="my-8 flex relative">
+				<Button
+					className="mx-1 w-40"
+					style={{ margin: "0 0.25rem" }}
+					onClick={() => router.push("/signup")}
+				>
 					Registrate
 				</Button>
 				<button
 					className="bg-gradient-to-r from-green-400 to-main-500 p-px rounded-full flex items-stretch mx-1"
 					onClick={() => router.push("/signin")}
 				>
-					<div className="bg-white px-6 rounded-full flex items-center">
+					<div className="bg-white px-6 rounded-full flex justify-center items-center w-40">
 						<span className="bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-main-500">
-							Login
+							Iniciar Sesi&oacute;n
 						</span>
 					</div>
 				</button>
@@ -59,7 +63,7 @@ export default function CTA() {
 					</defs>
 				</svg>
 				<a
-					href="https://github.com/davidsdevel/lakar-video"
+					href="https://github.com/davidsdevel/lakar-videocall"
 					target="_blank"
 					rel="noreferrer"
 					className="mx-1"

@@ -45,11 +45,13 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           push: true
           tags: davidsdevel/lakar:latest
+          cache-from: type=registry,ref=davidsdevel/lakar:buildcache
+          cache-to: type=registry,ref=davidsdevel/lakar:buildcache,mode=max
 
       - name: Ejecutar comandos remotos por SSH
         uses: appleboy/ssh-action@v1

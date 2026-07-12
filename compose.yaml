@@ -1,14 +1,48 @@
 services:
   mongo:
-    ports:
-      - 27017:27017
-    image: mongo
-    restart: always
+    image: mongo:7
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - lakar
 
-  mongo-express:
-    image: mongo-express
-    restart: always
+  lakar:
+    build: .
+    image: davidsdevel/lakar:latest
+    restart: unless-stopped
     ports:
-      - 8081:8081
+      - "8082:8082"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8082/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
     environment:
-      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      NODE_ENV: production
+      PORT: 8082
+      MONGO_URL: mongodb://mongo:27017/lakar?authSource=admin
+      AUTH_URL: https://lakar-url.com
+      AUTH_TRUST_HOST: true
+      AUTH_SECRET: 
+      GOOGLE_CLIENT_ID: 
+      GOOGLE_CLIENT_SECRET: 
+      SERVICE_URL: http://localhost:8082
+      NEXT_PUBLIC_API_URL: https://lakar-url.com
+    depends_on:
+      mongo:
+        condition: service_healthy
+    networks:
+      - lakar
+
+volumes:
+  mongo-data:
+
+networks:
+  lakar:

@@ -20,6 +20,14 @@ async function init() {
 
 	const expressApp = express();
 
+	expressApp.get("/healthz", (req, res) => {
+		const dbReady = mongoose.connection.readyState === 1;
+		if (dbReady) {
+			return res.status(200).json({ status: "ok" });
+		}
+		return res.status(503).json({ status: "error", db: "disconnected" });
+	});
+
 	expressApp.all("*", async (req, res) => {
 		const parsedUrl = parse(req.url, true);
 

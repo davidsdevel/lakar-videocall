@@ -55,14 +55,3 @@ jobs:
           tags: davidsdevel/lakar:latest          
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Ejecutar comandos remotos por SSH
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.DEPLOYMENT_IP }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.DEPLOYMENT_KEY }}
-          script: |
-            cd ~/peer
-            docker compose pull lakar
-            docker compose up -d

@@ -107,7 +107,6 @@ lakar-videocall/
 │   ├── handlers/         # Eventos de Socket.io
 │   ├── models/           # Modelos Mongoose (server-side)
 │   └── index.js          # Express + Socket.io + Next.js server
-├── lakar-stack.yaml      # Manifest de Kubernetes
 ├── compose.yaml          # Docker Compose
 ├── Dockerfile            # Multi-stage build
 └── index.js              # Entry point

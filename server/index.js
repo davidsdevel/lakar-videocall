@@ -41,7 +41,7 @@ async function init() {
 
 	io.on("connection", handleConnection);
 
-	httpServer.listen(port, () =>
+	httpServer.listen(port, '0.0.0.0', () =>
 		console.log(`> Ready on http://localhost:${port}`),
 	);
 }
